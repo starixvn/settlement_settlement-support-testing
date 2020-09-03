@@ -1,0 +1,51 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Clone data - support for testing</title>
+    <script src="scripts/jquery-1.8.3.min.js"></script>
+    <script src="scripts/sites.js"></script>
+    <style>
+        .external-result-detail {
+            max-height: 480px;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            border-right: solid 1px #C8C8C8;
+        }
+    </style>
+</head>
+<body>
+    <table border="0" cellpadding="2" cellspacing="2" style="width:1200px;">
+        <tr>
+            <td width="300px" valign="top">
+                <fieldset style="width:300px;">
+                    MatchId on PRO:<br>
+                    <input type="text" id="matchId-pro" value="" /><br>
+                    MatchId on SIT:<br>
+                    <input type="text" id="matchId-sit" value="" /><br>
+                    <br>
+                    <input type="button" id="Get" value="Review data on Pro">
+                    <input type="button" id="Submit" value="Clone data">
+                </fieldset>
+            </td>
+            <td align="left" width="300px" valign="top">
+                <div id="data-result-detail" style="display:none" class="external-result-detail"></div>
+            </td>
+            <td align="left" width="300px" valign="top">
+                <div id="data-external-result-detail" style="display:none" class="external-result-detail"></div>
+            </td>
+        </tr>
+    </table>
+    @Html.Hidden("api-url", System.Configuration.ConfigurationManager.AppSettings["Api_Url"])
+</body>
+</html>
+<script type="text/javascript">
+    jQuery(window.document).ready(function () {
+        site.init();
+    });
+</script>

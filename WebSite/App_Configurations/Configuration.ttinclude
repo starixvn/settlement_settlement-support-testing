@@ -1,0 +1,45 @@
+﻿<#@ import namespace="System" #>
+<#
+	var sites = new SiteInfo[]{
+		new SiteInfo
+		{
+			Environment = SiteEnvironment.LOCAL
+		},
+		new SiteInfo
+		{
+			Environment = SiteEnvironment.UAT
+		},
+		new SiteInfo
+		{
+			Environment = SiteEnvironment.SIT
+		}
+	};
+#>
+<#+
+	enum SiteEnvironment
+	{
+		LOCAL,
+		UAT,
+		SIT
+	}
+	class SiteInfo
+	{
+		public SiteEnvironment Environment { get; set; }
+
+		public string ApiUrl
+        {
+            get
+            {
+                switch(Environment)
+                {
+					case SiteEnvironment.SIT:
+						return "http://nap-settlement.starific.net/cloneapi/";
+				    case SiteEnvironment.UAT:
+                        return "";
+					default:
+                        return "";
+                }
+            }
+        }
+	}
+#>

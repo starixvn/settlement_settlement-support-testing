@@ -1,0 +1,4 @@
+﻿<Functions>
+  <Setting Key ="NAP_Set_CloneResultDetailSel" SpName="NAP_CloneResultDetailSel_xtest" DbName="DBPRO.bodb02.bodbAdminNet.UAT" />
+  <Setting Key ="NAP_Set_CloneResultDetailIns" SpName="NAP_CloneResultDetailToSIT_xtest" DbName="DBPRO.bodb02.bodbAdminNet.SIT" />
+</Functions>
