@@ -17,9 +17,10 @@ namespace WebSite.Controllers
             service = new QueryService();
         }
 
-        [Route("get-result"), HttpPost]
-        public async Task<IHttpActionResult> GetResultDetail(GetResultDetailRequest request)
+        [Route("get-result")]
+        public async Task<IHttpActionResult> GetResultDetail()
         {
+            var request = new GetResultDetailRequest { MatchId = 38263539 };
             return Ok(await service.Get(request.MatchId));
         }
 

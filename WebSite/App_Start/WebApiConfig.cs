@@ -1,4 +1,7 @@
-﻿using System.Web.Http;
+﻿using System.Net.Http;
+using System.Web.Http;
+using System.Web.Http.Cors;
+using System.Web.Http.Routing;
 
 namespace WebSite
 {
@@ -6,8 +9,9 @@ namespace WebSite
     {
         public static void Register(HttpConfiguration config)
         {
-            // Web API configuration and services
             config.EnableCors();
+
+            // Web API configuration and services
             // Web API routes
             config.MapHttpAttributeRoutes();
 

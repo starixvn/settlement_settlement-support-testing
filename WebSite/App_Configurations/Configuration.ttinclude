@@ -37,7 +37,7 @@
 				    case SiteEnvironment.UAT:
                         return "";
 					default:
-                        return "";
+                        return "http://nap-settlement.starific.net/cloneapi/";
                 }
             }
         }
