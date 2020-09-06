@@ -22,12 +22,11 @@
             }
 
             $.ajax({
-                type: "GET",
-                async: false,
-                crossDomain: true,
-                headers: { 'Access-Control-Allow-Origin': '*' },
+                type: "POST",
                 url: api + "api/clone-data/get-result",
+                contentType: "application/json; charset=utf-8",
                 dataType: "json",
+                data: JSON.stringify(param),
                 success: function (result) {
                     if (result.ResultDetails.length > 0 || result.ExternalResultDetails.length > 0) {
                         $('#data-result-detail').empty();
@@ -59,7 +58,6 @@
 
             $.ajax({
                 type: "POST",
-                crossDomain: true,
                 url: api + "api/clone-data/get-result",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
