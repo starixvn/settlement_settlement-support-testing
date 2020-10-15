@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Fanex.Data;
 using Fanex.Data.Repository;
 using Kaden.XmlConverter;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using WebSite.Criteria;
@@ -103,6 +105,20 @@ namespace WebSite.Services
             };
 
             return xmlConvertService.Serialize(resources);
+        }
+
+        public async Task<DataSet> GetBalance(GetBalanceRequest request)
+        {
+            var criteria = new GetBalanceCriteria
+            {
+                MatchId = request.matchID,
+                CustId = request.custID
+            };
+
+            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
+            {
+                return await objectDb.ExecuteDataSetAsync(criteria).ConfigureAwait(false);
+            }
         }
     }
 }

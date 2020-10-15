@@ -8,6 +8,10 @@
             $('#Submit').click(function () {
                 site.submit();
             });
+
+            $('#get-balance').click(function () {
+                site.getBalance();
+            });
         },
 
         getData: function () {
@@ -76,6 +80,57 @@
                     console.log("Complete");
                 }
             });
+        },
+
+        getBalance: function () {
+            var api = $("#api-url").val();
+            if ($('#matchId').val() === "" || $('#custId').val() === "") {
+                alert("Please input value.");
+                return;
+            }
+
+            var param = {
+                MatchId: $('#matchId').val(),
+                CustId: $('#custId').val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "api/balance/get-balance",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify(param),
+                success: function (result) {
+                    if (result.Table.length > 0 || result.Table1.length > 0 ||
+                        result.Table2.length > 0 || result.Table3.length > 0) {
+                        $("#data").empty();
+                        $("#data").show();
+                        $("#data").append('General Wallet: ');
+                        $("#data").append(JSON.stringify(result.Table));
+                        $("#data").append('<br>');
+                        $("#data").append('Bonus Wallet: ');
+                        $("#data").append(JSON.stringify(result.Table1));
+                        $("#data").append('<br>');
+                        $("#data").append('Bonus Adjustment Transfer: ');
+                        $("#data").append(JSON.stringify(result.Table2));
+                        $("#data").append('<br>');
+                        $("#data").append('Transaction: ');
+                        $("#data").append(JSON.stringify(result.Table3));
+                    }
+                    else {
+                        $("#data").empty();
+                        alert("No data ");
+                    }
+                },
+                error: function () {
+                    console.log("Error");
+                },
+                complete: function () {
+                    console.log("Complete");
+                }
+            });
+
+
         },
 
         cloneData: function (data) {

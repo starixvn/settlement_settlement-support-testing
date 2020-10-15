@@ -1,7 +1,1 @@
-﻿
-
-// Generated helper templates
-// Generated items
-// WebSite\App_Configurations\Web.SIT.config
-// WebSite\App_Configurations\Web.UAT.config
-// WebSite\App_Configurations\Web.LOCAL.config
+﻿ErrorGeneratingOutput
