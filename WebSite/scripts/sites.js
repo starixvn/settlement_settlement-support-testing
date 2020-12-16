@@ -12,6 +12,18 @@
             $('#get-balance').click(function () {
                 site.getBalance();
             });
+
+            $('#add-result').click(function () {
+                site.addResult();
+            });
+
+            $('#remove-result').click(function () {
+                site.removeResult();
+            });
+
+            $('#form-submit').click(function () {
+                site.pushExternalResults();
+            });
         },
 
         getData: function () {
@@ -129,8 +141,6 @@
                     console.log("Complete");
                 }
             });
-
-
         },
 
         cloneData: function (data) {
@@ -150,6 +160,70 @@
                     }
                 }
             });
-        }
+        },
+
+        addResult: function () {
+            var copy = $("#result-block").html();
+            $("#container-block").append(copy);
+            var results = document.getElementsByClassName("result-child");
+            results[results.length - 1].className += " col-sm-3 mx-3 my-3 border border-dark";
+        },
+
+        removeResult: function () {
+            var results = document.getElementsByClassName("result-child");
+            var length = results.length;
+            if (length > 1) {
+                var last = results[length - 1];
+                last.parentNode.removeChild(last);
+            }
+        },
+
+        pushExternalResultsParam: function () {
+            var resultList = [];
+            var resultsLength = document.getElementsByClassName("result-child").length;
+            for (var i = 0; i < resultsLength; i++) {
+                var resourceId = $("input[name^='resourceId']").eq(i).val();
+                var homeValue = $("input[name^='homeValue']").eq(i).val();
+                var awayValue = $("input[name^='awayValue']").eq(i).val();
+
+                var resultItem = {
+                    resourceId,
+                    homeValue,
+                    awayValue,
+                };
+                resultList.push(resultItem);
+            }
+
+            return {
+                matchId3rd: parseInt($('#matchId3rd').val()),
+                matchId: parseInt($('#matchId').val()),
+                sourceId: parseInt($('#sourceId').val()),
+                results: resultList,
+            };
+        },
+
+        pushExternalResults: function () {
+            var param = site.pushExternalResultsParam();
+            $.ajax({
+                type: "POST",
+                url: "api/score/push-result",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify(param),
+                success: function (result) {
+                    if (result.ErrCode === 0) {
+                        alert("Pushed results successfully")
+                    } else {
+                        alert(result.ErrMsg);
+                    }
+                },
+                error: function () {
+                    console.log("Error");
+                },
+                complete: function () {
+                    console.log("Complete");
+                }
+            });
+        },
     };
 }(jQuery));

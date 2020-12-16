@@ -196,14 +196,19 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\BalanceApiController.cs" />
     <Compile Include="Controllers\CloneApiController.cs" />
+    <Compile Include="Controllers\ExternalResultsController.cs" />
     <Compile Include="Criteria\CloneResultDetailCriteria.cs" />
     <Compile Include="Criteria\GetBalanceCriteria.cs" />
     <Compile Include="Criteria\GetResultDetailCriteria.cs" />
+    <Compile Include="Criteria\PushExternalResultCriteria.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\CloneResultDetailModel.cs" />
     <Compile Include="Models\ExternalResultDetailModel.cs" />
+    <Compile Include="Models\ExternalResults\QueryModel.cs" />
+    <Compile Include="Models\ExternalResults\Resources.cs" />
+    <Compile Include="Models\ExternalResults\ResultDetailResource.cs" />
     <Compile Include="Models\GetBalanceRequest.cs" />
     <Compile Include="Models\GetResultDetailRequest.cs" />
     <Compile Include="Models\ExternalResources.cs" />
@@ -244,6 +249,7 @@
     </Content>
     <Content Include="clone-data.cshtml" />
     <Content Include="view-balance.cshtml" />
+    <Content Include="external-results.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

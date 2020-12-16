@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebSite.Criteria;
 using WebSite.Models;
+using WebSite.Models.ExternalResults;
 
 namespace WebSite.Services
 {
@@ -75,7 +76,7 @@ namespace WebSite.Services
                 resourceItems.Add(item);
             }
 
-            var resources = new Resources
+            var resources = new Models.Resources
             {
                 ResourceItems = resourceItems
             };
@@ -119,6 +120,30 @@ namespace WebSite.Services
             {
                 return await objectDb.ExecuteDataSetAsync(criteria).ConfigureAwait(false);
             }
+        }
+
+        public async Task<Result> PushScore(QueryModel request)
+        {
+            var criteria = new PushExternalResultCriteria
+            {
+                MatchId3rd = request.MatchId3rd,
+                MatchId = request.MatchId,
+                SourceId = request.SourceId,
+            };
+
+            var resources = new Models.ExternalResults.Resources
+            {
+                ResourceItems = request.Results
+            };
+
+            criteria.Resources = xmlConvertService.Serialize(resources);
+            await repository.ExecuteAsync(criteria);
+
+            return new Result
+            {
+                ErrCode = criteria.ErrCode,
+                ErrMsg = criteria.ErrMsg
+            };
         }
     }
 }
