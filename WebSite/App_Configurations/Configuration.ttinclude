@@ -12,7 +12,11 @@
 		new SiteInfo
 		{
 			Environment = SiteEnvironment.SIT
-		}
+		},
+        new SiteInfo
+        {
+            Environment = SiteEnvironment.PRO
+        }
 	};
 #>
 <#+
@@ -20,7 +24,8 @@
 	{
 		LOCAL,
 		UAT,
-		SIT
+		SIT,
+        PRO
 	}
 	class SiteInfo
 	{
@@ -38,6 +43,50 @@
                         return "";
 					default:
                         return "http://napsettlement.starixuat.com/cloneapi/";
+                }
+            }
+        }
+
+		public string LeaguesTestUAT
+        {
+            get
+            {
+                switch(Environment)
+                {
+					case SiteEnvironment.LOCAL:
+						return @"\\10.18.200.120\ShareConfigs\auto-league-settings.ini";
+                   
+					case SiteEnvironment.SIT:
+                        return @"\\172.16.4.106\ShareConfigs\auto-league-settings.ini";
+                    
+					case SiteEnvironment.UAT:
+					case SiteEnvironment.PRO:
+                        return @"\\10.40.40.73\ShareConfigs\auto-league-settings.ini";
+                   
+                    default:
+                        return string.Empty;
+                }
+            }
+        } 
+
+		public string LeaguesTestPRO
+        {
+            get
+            {
+                switch(Environment)
+                {
+					case SiteEnvironment.LOCAL:
+						return @"\\10.18.200.104\ShareConfigs\auto-league-settings.ini";
+                   
+					case SiteEnvironment.SIT:
+                        return @"\\172.16.4.106\ShareConfigs\auto-league-settings.ini";
+                    
+					case SiteEnvironment.UAT:
+					case SiteEnvironment.PRO:
+                        return @"\\10.40.40.22\ShareConfigs\auto-league-settings.ini";
+                    
+                    default:
+                        return string.Empty;
                 }
             }
         }

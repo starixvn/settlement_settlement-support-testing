@@ -1,23 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.Cors;
 using WebSite.Models.ExternalResults;
 using WebSite.Services;
 
 namespace WebSite.Controllers
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
     [RoutePrefix("api/score")]
-    public class ExternalResultsController : ApiController
+    public class ExternalResultsApiController : ApiController
     {
         private readonly QueryService queryService;
 
-        public ExternalResultsController()
+        public ExternalResultsApiController()
         {
             queryService = new QueryService();
         }
