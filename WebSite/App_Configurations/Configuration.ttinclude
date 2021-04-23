@@ -83,7 +83,7 @@
                     
 					case SiteEnvironment.UAT:
 					case SiteEnvironment.PRO:
-                        return @"\\10.40.40.22\ShareConfigs\auto-league-settings.ini";
+                        return @"\\10.99.99.70\ShareConfigs\auto-league-settings.ini";
                     
                     default:
                         return string.Empty;

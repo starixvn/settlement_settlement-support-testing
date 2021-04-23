@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Web.Http;
 using WebSite.Models;
 using WebSite.Services;
@@ -29,7 +30,15 @@ namespace WebSite.Controllers
         [HttpPost, Route("update")]
         public IHttpActionResult Update(LeaguesTestModel model)
         {
-            leaguesTestService.ChangeLeaguesTest(model);
+            try
+            {
+                leaguesTestService.ChangeLeaguesTest(model);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
             return Ok(new Result());
         }
     }
