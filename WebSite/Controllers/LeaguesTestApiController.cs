@@ -11,9 +11,9 @@ namespace WebSite.Controllers
     [RoutePrefix("api/league-test")]
     public class LeaguesTestApiController : ApiController
     {
-        private const string KEY_EXCLUDE_LEAGUEID = "Settlement-AutoPayout-AutoInstant-ExcludeLeagueId";
+        private const string KEY_LEAGUEID = "Settlement-AutoPayout-AutoInstant-LeagueId";
 
-        private const string KEY_INCLUDE_LEAGUEID = "Settlement-AutoPayout-AutoInstant-IncludeLeagueId";
+        private const string KEY_LEAGUEID_OTHERSPORT = "Settlement-AutoPayoutOtherSport-LeagueId";
 
         private const double CACHE_EXPIRED_IN_DAYS = 1095;
 
@@ -35,27 +35,42 @@ namespace WebSite.Controllers
         [HttpGet, Route("get")]
         public IHttpActionResult Get()
         {
-            int excludeLeagueId, includeLeagueId;
-            cache.TryGet(KEY_EXCLUDE_LEAGUEID, out excludeLeagueId);
-            cache.TryGet(KEY_INCLUDE_LEAGUEID, out includeLeagueId);
+            int leagueId, leagueIdOtherSport;
+            cache.TryGet(KEY_LEAGUEID, out leagueId);
+            cache.TryGet(KEY_LEAGUEID_OTHERSPORT, out leagueIdOtherSport);
 
-            return Ok(new { includeLeagueId, excludeLeagueId });
+            return Ok(new { leagueId, leagueIdOtherSport });
         }
 
         [HttpPost, Route("update")]
         public IHttpActionResult Update(LeaguesTestModel model)
         {
             var cachePolicy = new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(CACHE_EXPIRED_IN_DAYS));
+            var val = model.LeagueIds.Replace(" ", string.Empty);
             if (model.IsClear)
             {
-                cache.Set(KEY_EXCLUDE_LEAGUEID, 0, cachePolicy);
-                cache.Set(KEY_INCLUDE_LEAGUEID, 165, cachePolicy);
+                cache.Set(KEY_LEAGUEID, 0, cachePolicy);
             }
             else
             {
-                var val = model.LeagueIds.Replace(" ", string.Empty);
-                cache.Set(KEY_EXCLUDE_LEAGUEID, int.Parse(val), cachePolicy);
-                cache.Set(KEY_INCLUDE_LEAGUEID, int.Parse(val), cachePolicy);
+                cache.Set(KEY_LEAGUEID, int.Parse(val), cachePolicy);
+            }
+
+            return Ok(new Result());
+        }
+
+        [HttpPost, Route("update-other-sport")]
+        public IHttpActionResult UpdateOtherSport(LeaguesTestModel model)
+        {
+            var cachePolicy = new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(CACHE_EXPIRED_IN_DAYS));
+            var val = model.LeagueIds.Replace(" ", string.Empty);
+            if (model.IsClear)
+            {
+                cache.Set(KEY_LEAGUEID_OTHERSPORT, 0, cachePolicy);
+            }
+            else
+            {
+                cache.Set(KEY_LEAGUEID_OTHERSPORT, int.Parse(val), cachePolicy);
             }
 
             return Ok(new Result());

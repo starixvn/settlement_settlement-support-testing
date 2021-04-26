@@ -33,9 +33,7 @@ obj/
 Ankh.NoLoad
 _ReSharper*/
 [Tt]est[Rr]esult*
-*.vssscc
 $tf*/
-Fanex.TicketControl.Website/Fanex.TicketControl.Website.Publish.xml
 *.GhostDoc.xml
 /cireport
 *.StyleCop.violations.xml

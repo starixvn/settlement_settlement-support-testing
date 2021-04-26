@@ -36,6 +36,34 @@
         </fieldset>
     </form>
     <br>
+    <form id="UpdateResultOtherSport">
+        <fieldset>
+            <legend>Update League Test for service(AutoPayoutOtherSport):</legend>
+            <table cellpadding="2" cellspacing="2" border="0">
+                <tr>
+                    <td>- LeagueIds:</td>
+                    <td><input type="text" onkeypress='validate(event)' id="leagueIdOtherSport" value="" /> Ex: 1234</td>
+                    <td width="70px"></td>
+                    <td>
+                        <span>LeagueIdExclude:</span>
+                        <span id="leagueIdOtherSportExclude"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="button" id="SubmitOtherSport" value="Submit">
+                        <input type="button" id="ClearLeagueOtherSportTest" value="Clear league test PRO">
+                    </td>
+                    <td></td>
+                    <td>
+                        <span>LeagueIdInclude:</span>
+                        <span id="leagueIdOtherSportInclude"></span>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+    </form>
 </body>
 </html>
 
@@ -48,8 +76,10 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (result) {
-                $('#leagueIdExclude').html(result.excludeLeagueId)
-                $('#leagueIdInclude').html(result.includeLeagueId)
+                $('#leagueIdExclude').html(result.leagueId)
+                $('#leagueIdInclude').html(result.leagueId)
+                $('#leagueIdOtherSportExclude').html(result.leagueIdOtherSport)
+                $('#leagueIdOtherSportInclude').html(result.leagueIdOtherSport)
 
             }
         });
@@ -66,6 +96,35 @@
             $.ajax({
                 type: "POST",
                 url: "api/league-test/update",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify(params),
+                success: function (result) {
+                    location.reload();
+
+                },
+                error: function () {
+                    console.log("Error");
+                },
+                complete: function () {
+                    console.log("Complete");
+                }
+            });
+        }
+
+    });
+
+    $('#ClearLeagueOtherSportTest').click(function (e) {
+        var con = confirm("Are you sure you want to clear league test for other sport on the production?")
+        if (con) {
+            var params = {
+                LeagueIds: "",
+                IsClear: true
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "api/league-test/update-other-sport",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 data: JSON.stringify(params),
@@ -115,6 +174,39 @@
             }
         });
     });
+
+    $('#SubmitOtherSport').click(function (e) {
+        var leagueids = $('#leagueIdOtherSport').val();
+
+        if (leagueids === "") {
+            alert("Please input leagueId.");
+            return;
+        }
+
+        var params = {
+            LeagueIds: leagueids,
+            IsClear: false
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "api/league-test/update-other-sport",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(params),
+            success: function (result) {
+                location.reload();
+
+            },
+            error: function () {
+                console.log("Error");
+            },
+            complete: function () {
+                console.log("Complete");
+            }
+        });
+    });
+
 
     function validate(evt) {
         var theEvent = evt || window.event;
