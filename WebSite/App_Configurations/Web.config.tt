@@ -18,8 +18,10 @@ http://go.microsoft.com/fwlink/?LinkId=301879
     <appSettings>
 	  <add key="Api_Url" value="<#=site.ApiUrl#>"/>
 	  <add key="StoredProcedurePath" value="App_Data\SpName.xml"/>
-      <add key="LeaguesTestUAT" value="<#=site.LeaguesTestUAT#>" />
-      <add key="LeaguesTestPRO" value="<#=site.LeaguesTestPRO#>" />
+      <add key="Redis.Server" value="<#= site.RedisServer #>" />
+     <add key="Redis.Port" value="<#= site.RedisPort #>" />
+     <add key="Redis.Password" value="<#= site.RedisPassword #>" />
+     <add key="Redis.AppName" value="<#= site.RedisAppName #>" />
 	</appSettings>
     <connectionStrings configSource="App_Configurations\Web.<#=site.Environment#>.ConnectionStrings.config" />
     <system.web>

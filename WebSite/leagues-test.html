@@ -12,7 +12,7 @@
             <table cellpadding="2" cellspacing="2" border="0">
                 <tr>
                     <td>- LeagueIds:</td>
-                    <td><input type="text" id="leagueIds" value="" /> Ex: 12345,98734</td>
+                    <td><input type="text" onkeypress='validate(event)' id="leagueIds" value="" /> Ex: 1234</td>
                 </tr>
                 <tr>
                     <td></td>
@@ -28,14 +28,12 @@
             <tr>
                 <td>
                     <fieldset>
-                        <legend>Setting on UAT:</legend>
-                        <span id="leagueIdsUat"></span>
-                    </fieldset>
-                </td>
-                <td>
-                    <fieldset>
                         <legend>Setting on PRO:</legend>
-                        <span id="leagueIdsPro"></span>
+                        <span>LeagueIdExclude:</span>
+                        <span id="leagueIdExclude"></span>
+                        <br />
+                        <span>LeagueIdInclude:</span>
+                        <span id="leagueIdInclude"></span>
                     </fieldset>
                 </td>
             </tr>
@@ -54,8 +52,8 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (result) {
-                $('#leagueIdsUat').html(result.uat.replace("\n", "<br />", "g"))
-                $('#leagueIdsPro').html(result.pro.replace("\n", "<br />", "g"))
+                $('#leagueIdExclude').html(result.excludeLeagueId)
+                $('#leagueIdInclude').html(result.includeLeagueId)
 
             }
         });
@@ -121,4 +119,22 @@
             }
         });
     });
+
+    function validate(evt) {
+        var theEvent = evt || window.event;
+
+        // Handle paste
+        if (theEvent.type === 'paste') {
+            key = event.clipboardData.getData('text/plain');
+        } else {
+            // Handle key press
+            var key = theEvent.keyCode || theEvent.which;
+            key = String.fromCharCode(key);
+        }
+        var regex = /[0-9]|\./;
+        if (!regex.test(key)) {
+            theEvent.returnValue = false;
+            if (theEvent.preventDefault) theEvent.preventDefault();
+        }
+    }
 </script>

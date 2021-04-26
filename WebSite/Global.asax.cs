@@ -1,8 +1,8 @@
-﻿using Fanex.Data;
+﻿using Fanex.Caching;
+using Fanex.Caching.Redis;
+using Fanex.Data;
 using Fanex.Data.SqlServer;
-using System;
 using System.Configuration;
-using System.Web;
 using System.Web.Http;
 
 namespace WebSite
@@ -14,6 +14,8 @@ namespace WebSite
             GlobalConfiguration.Configure(WebApiConfig.Register);
 
             StartDataBaseSetting();
+
+            StartRedisSetting();
         }
 
         private static void StartDataBaseSetting()
@@ -22,6 +24,15 @@ namespace WebSite
               .StartNewSession()
               .WithSqlServer(ConfigurationManager.AppSettings["StoredProcedurePath"])
               .Run();
+        }
+
+        private static void StartRedisSetting()
+        {
+            CacheServiceManager.Use(() => new RedisCache(new RedisCacheOptions
+            {
+                ConnectionString = $"{ConfigurationManager.AppSettings["Redis.Server"]}:{ConfigurationManager.AppSettings["Redis.Port"]},password={ConfigurationManager.AppSettings["Redis.Password"]},defaultDatabase=11",
+                ApplicationName = ConfigurationManager.AppSettings["Redis.AppName"]
+            }));
         }
     }
 }
