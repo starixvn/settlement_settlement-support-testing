@@ -1,8 +1,6 @@
 ﻿using Fanex.Data;
 using Fanex.Data.SqlServer;
-using System;
 using System.Configuration;
-using System.Web;
 using System.Web.Http;
 
 namespace WebSite

@@ -47,43 +47,87 @@
             }
         }
 
-		public string LeaguesTestUAT
+		public string RedisServer
         {
             get
             {
                 switch(Environment)
                 {
 					case SiteEnvironment.LOCAL:
-						return @"\\10.18.200.120\ShareConfigs\auto-league-settings.ini";
+						return @"ha.nexdev.net";
                    
-					case SiteEnvironment.SIT:
-                        return @"\\172.16.4.106\ShareConfigs\auto-league-settings.ini";
-                    
+				   case SiteEnvironment.SIT:
+                        return @"172.16.4.109";
+					            
 					case SiteEnvironment.UAT:
 					case SiteEnvironment.PRO:
-                        return @"\\10.40.40.73\ShareConfigs\auto-league-settings.ini";
-                   
+                       return @"10.99.99.51";
+                    
                     default:
                         return string.Empty;
                 }
             }
         } 
 
-		public string LeaguesTestPRO
+		public string RedisPort
         {
             get
             {
                 switch(Environment)
                 {
 					case SiteEnvironment.LOCAL:
-						return @"\\10.18.200.104\ShareConfigs\auto-league-settings.ini";
+						return @"16379";
                    
-					case SiteEnvironment.SIT:
-                        return @"\\172.16.4.106\ShareConfigs\auto-league-settings.ini";
-                    
+				   case SiteEnvironment.SIT:
+                        return @"16379";
+					            
 					case SiteEnvironment.UAT:
 					case SiteEnvironment.PRO:
-                        return @"\\10.99.99.70\ShareConfigs\auto-league-settings.ini";
+                       return @"16379";
+                    
+                    default:
+                        return string.Empty;
+                }
+            }
+        }
+
+		public string RedisPassword
+        {
+            get
+            {
+                switch(Environment)
+                {
+					case SiteEnvironment.LOCAL:
+						return @"foo1@bared";
+                   
+				   case SiteEnvironment.SIT:
+                        return @"foo1@bared";
+					            
+					case SiteEnvironment.UAT:
+					case SiteEnvironment.PRO:
+                       return @"foo1@bared";
+
+                    default:
+                        return string.Empty;
+                }
+            }
+        }
+
+		public string RedisAppName
+        {
+            get
+            {
+                switch(Environment)
+                {
+					case SiteEnvironment.LOCAL:
+						return @"Settlement-LOCAL";
+                   
+				   case SiteEnvironment.SIT:
+                        return @"Settlement-SIT";
+					            
+					case SiteEnvironment.UAT:
+					case SiteEnvironment.PRO:
+                       return @"Settlement-PRO";
                     
                     default:
                         return string.Empty;
