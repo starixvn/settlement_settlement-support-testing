@@ -26,7 +26,7 @@ Thumbs.db
 *.sbr
 ipch/
 obj/
-.vs*/
+.vs
 [Bb]in
 [Dd]ebug*/
 [Rr]elease*/
@@ -35,11 +35,10 @@ _ReSharper*/
 [Tt]est[Rr]esult*
 $tf*/
 *.GhostDoc.xml
-/cireport
 *.StyleCop.violations.xml
 *.StyleCop.xml
 *.FxCop.xml
 MsBuild.xml
 MSBUILD.SUMMARY.email
 SUMMARY.DISPLAY.xml
-packages/
+packages
