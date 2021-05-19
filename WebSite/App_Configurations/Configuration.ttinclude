@@ -38,11 +38,11 @@
                 switch(Environment)
                 {
 					case SiteEnvironment.SIT:
-						return "http://napsettlement.starixuat.com/cloneapi/";
+						return "https://napsettlement.starixuat.com/cloneapi/";
 				    case SiteEnvironment.UAT:
                         return "";
 					default:
-                        return "http://napsettlement.starixuat.com/cloneapi/";
+                        return "https://napsettlement.starixuat.com/cloneapi/";
                 }
             }
         }
