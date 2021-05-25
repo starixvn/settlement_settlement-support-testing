@@ -2,8 +2,8 @@
 {
     public class GetBalanceRequest
     {
-        public int custID { get; set; }
+        public int CustId { get; set; }
 
-        public int matchID { get; set; }
+        public int MatchId { get; set; }
     }
 }

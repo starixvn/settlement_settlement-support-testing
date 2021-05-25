@@ -258,6 +258,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AutoTestApiController.cs" />
     <Compile Include="Controllers\BalanceApiController.cs" />
     <Compile Include="Controllers\CloneApiController.cs" />
     <Compile Include="Controllers\ExternalResultsApiController.cs" />
@@ -283,6 +284,7 @@
     <Compile Include="Models\ResourcesItem.cs" />
     <Compile Include="Models\Result.cs" />
     <Compile Include="Models\ResultDetailModel.cs" />
+    <Compile Include="Models\SportTypeRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\LeaguesTestService.native.cs" />
     <Compile Include="Services\QueryService.cs" />

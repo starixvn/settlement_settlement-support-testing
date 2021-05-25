@@ -112,8 +112,8 @@ namespace WebSite.Services
         {
             var criteria = new GetBalanceCriteria
             {
-                MatchId = request.matchID,
-                CustId = request.custID
+                MatchId = request.MatchId,
+                CustId = request.CustId
             };
 
             using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
