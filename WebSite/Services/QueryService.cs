@@ -145,5 +145,16 @@ namespace WebSite.Services
                 ErrMsg = criteria.ErrMsg
             };
         }
+
+        public int GetMatchBySportType(int sportType)
+        {
+            var criteria = new GetMatchBySportCriteria
+            {
+                SportType = sportType
+            };
+
+            var match = repository.Get<Match>(criteria);
+            return match.MatchId;
+        }
     }
 }

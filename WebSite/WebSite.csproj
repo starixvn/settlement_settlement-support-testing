@@ -265,6 +265,7 @@
     <Compile Include="Controllers\LeaguesTestApiController.cs" />
     <Compile Include="Criteria\CloneResultDetailCriteria.cs" />
     <Compile Include="Criteria\GetBalanceCriteria.cs" />
+    <Compile Include="Criteria\GetMatchBySportCriteria.cs" />
     <Compile Include="Criteria\GetResultDetailCriteria.cs" />
     <Compile Include="Criteria\PushExternalResultCriteria.cs" />
     <Compile Include="Global.asax.cs">
@@ -279,6 +280,7 @@
     <Compile Include="Models\GetResultDetailRequest.cs" />
     <Compile Include="Models\ExternalResources.cs" />
     <Compile Include="Models\LeaguesTestModel.cs" />
+    <Compile Include="Models\Match.cs" />
     <Compile Include="Models\Resources.cs" />
     <Compile Include="Models\ExternalResourcesItem.cs" />
     <Compile Include="Models\ResourcesItem.cs" />
