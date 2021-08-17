@@ -15,6 +15,8 @@ namespace WebSite.Controllers
 
         private const string KEY_LEAGUEID_OTHERSPORT = "Settlement-AutoPayoutOtherSport-LeagueId";
 
+        private const string KEY_LEAGUEID_VIRTUALCRICKET = "Settlement-AutoPayoutVirtualCricket-LeagueId";
+
         private const double CACHE_EXPIRED_IN_DAYS = 1095;
 
         private readonly LeaguesTestService leaguesTestService;
@@ -35,11 +37,12 @@ namespace WebSite.Controllers
         [HttpGet, Route("get")]
         public IHttpActionResult Get()
         {
-            int leagueId, leagueIdOtherSport;
+            int leagueId, leagueIdOtherSport, leagueIdVirtualCricket;
             cache.TryGet(KEY_LEAGUEID, out leagueId);
             cache.TryGet(KEY_LEAGUEID_OTHERSPORT, out leagueIdOtherSport);
+            cache.TryGet(KEY_LEAGUEID_VIRTUALCRICKET, out leagueIdVirtualCricket);
 
-            return Ok(new { leagueId, leagueIdOtherSport });
+            return Ok(new { leagueId, leagueIdOtherSport, leagueIdVirtualCricket });
         }
 
         [HttpPost, Route("update")]
@@ -71,6 +74,23 @@ namespace WebSite.Controllers
             else
             {
                 cache.Set(KEY_LEAGUEID_OTHERSPORT, int.Parse(val), cachePolicy);
+            }
+
+            return Ok(new Result());
+        }
+
+        [HttpPost, Route("update-virtual-cricket")]
+        public IHttpActionResult UpdateVirtualCricket(LeaguesTestModel model)
+        {
+            var cachePolicy = new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(CACHE_EXPIRED_IN_DAYS));
+            var val = model.LeagueIds.Replace(" ", string.Empty);
+            if (model.IsClear)
+            {
+                cache.Set(KEY_LEAGUEID_VIRTUALCRICKET, 0, cachePolicy);
+            }
+            else
+            {
+                cache.Set(KEY_LEAGUEID_VIRTUALCRICKET, int.Parse(val), cachePolicy);
             }
 
             return Ok(new Result());
