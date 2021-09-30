@@ -17,16 +17,22 @@ namespace WebSite.Controllers
         }
 
         [Route("get-match-by-sport-type"), HttpPost]
-        public IHttpActionResult GetMatchBySportId(SportTypeRequest sporttype)
+        public IHttpActionResult GetMatchBySportId(SportTypeRequest request)
         {
-            var matchId = queryService.GetMatchBySportType(sporttype.Id);
+            var matchId = queryService.GetMatchBySportType(request);
             return Ok(new { matchId });
         }
 
         [Route("test"), HttpGet]
-        public IHttpActionResult TestMatchBySportId(int sporttype)
+        public IHttpActionResult TestMatchBySportId(int sporttype, bool isTicket)
         {
-            var matchId = queryService.GetMatchBySportType(sporttype);
+            var request = new SportTypeRequest
+            {
+                Id = sporttype,
+                IsTicket = isTicket
+            };
+
+            var matchId = queryService.GetMatchBySportType(request);
             return Ok(new { matchId });
         }
     }

@@ -6,6 +6,8 @@ namespace WebSite.Criteria
     {
         public int SportType { get; set; }
 
+        public bool IsTicket { get; set; }
+
         public override string GetSettingKey()
         {
             return "Kaden_GetMatchForTesting";

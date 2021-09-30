@@ -146,11 +146,12 @@ namespace WebSite.Services
             };
         }
 
-        public int GetMatchBySportType(int sportType)
+        public int GetMatchBySportType(SportTypeRequest request)
         {
             var criteria = new GetMatchBySportCriteria
             {
-                SportType = sportType
+                SportType = request.Id,
+                IsTicket = request.IsTicket
             };
 
             var match = repository.Get<Match>(criteria);
