@@ -20,6 +20,7 @@ http://go.microsoft.com/fwlink/?LinkId=301879
 	  <add key="StoredProcedurePath" value="App_Data\SpName.xml"/>
       <add key="Redis.Server" value="<#= site.RedisServer #>" />
      <add key="Redis.Port" value="<#= site.RedisPort #>" />
+      <add key="Redis.DefaultDatabase" value="2" />
      <add key="Redis.Password" value="<#= site.RedisPassword #>" />
      <add key="Redis.AppName" value="<#= site.RedisAppName #>" />
 	</appSettings>

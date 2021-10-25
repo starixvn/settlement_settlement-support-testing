@@ -29,7 +29,7 @@ namespace WebSite.Controllers
 
             this.cache = new RedisCache(new RedisCacheOptions
             {
-                ConnectionString = $"{ConfigurationManager.AppSettings["Redis.Server"]}:{ConfigurationManager.AppSettings["Redis.Port"]},password={ConfigurationManager.AppSettings["Redis.Password"]},defaultDatabase=11",
+                ConnectionString = $"{ConfigurationManager.AppSettings["Redis.Server"]}:{ConfigurationManager.AppSettings["Redis.Port"]},password={ConfigurationManager.AppSettings["Redis.Password"]},defaultDatabase={ConfigurationManager.AppSettings["Redis.DefaultDatabase"]}",
                 ApplicationName = ConfigurationManager.AppSettings["Redis.AppName"]
             });
         }

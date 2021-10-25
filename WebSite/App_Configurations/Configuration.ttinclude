@@ -54,14 +54,14 @@
                 switch(Environment)
                 {
 					case SiteEnvironment.LOCAL:
-						return @"ha.nexdev.net";
+						return @"10.18.200.131";
                    
 				   case SiteEnvironment.SIT:
-                        return @"172.16.4.109";
+                        return @"172.16.2.44";
 					            
 					case SiteEnvironment.UAT:
 					case SiteEnvironment.PRO:
-                       return @"10.99.99.51";
+                       return @"10.2.27.8";
                     
                     default:
                         return string.Empty;
@@ -76,14 +76,14 @@
                 switch(Environment)
                 {
 					case SiteEnvironment.LOCAL:
-						return @"16379";
+						return @"6343";
                    
 				   case SiteEnvironment.SIT:
                         return @"16379";
 					            
 					case SiteEnvironment.UAT:
 					case SiteEnvironment.PRO:
-                       return @"16379";
+                       return @"6343";
                     
                     default:
                         return string.Empty;
