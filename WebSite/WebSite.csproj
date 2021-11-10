@@ -261,6 +261,7 @@
     <Compile Include="Controllers\AutoTestApiController.cs" />
     <Compile Include="Controllers\BalanceApiController.cs" />
     <Compile Include="Controllers\CloneApiController.cs" />
+    <Compile Include="Controllers\DeleteMatchTestApiController.cs" />
     <Compile Include="Controllers\ExternalResultsApiController.cs" />
     <Compile Include="Controllers\LeaguesTestApiController.cs" />
     <Compile Include="Criteria\CloneResultDetailCriteria.cs" />
@@ -272,6 +273,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\CloneResultDetailModel.cs" />
+    <Compile Include="Models\DeleteMatchRequest.cs" />
+    <Compile Include="Models\DeleteEventResponse.cs" />
     <Compile Include="Models\ExternalResultDetailModel.cs" />
     <Compile Include="Models\ExternalResults\QueryModel.cs" />
     <Compile Include="Models\ExternalResults\Resources.cs" />

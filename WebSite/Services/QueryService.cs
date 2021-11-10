@@ -157,5 +157,24 @@ namespace WebSite.Services
             var match = repository.Get<Match>(criteria);
             return match.MatchId;
         }
+
+        public IEnumerable<DeleteEventResponse> DeleteMatch(DeleteMatchRequest request)
+        {
+            var result = new List<DeleteEventResponse>();
+            foreach (var requestMatchId in request.MatchIds)
+            {
+                if (requestMatchId % 2 == 0)
+                {
+                    var resultByMatchId = new DeleteEventResponse(requestMatchId, true, "MatchSuccess");
+                    result.Add(resultByMatchId);
+                }
+                else
+                {
+                    var resultByMatchId = new DeleteEventResponse(requestMatchId, false, "MatchFail");
+                    result.Add(resultByMatchId);
+                }
+            }
+            return result;
+        }
     }
 }
