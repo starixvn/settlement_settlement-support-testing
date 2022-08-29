@@ -76,14 +76,14 @@
                 switch(Environment)
                 {
 					case SiteEnvironment.LOCAL:
-						return @"6343";
+						return @"16379";
                    
 				   case SiteEnvironment.SIT:
                         return @"16379";
 					            
 					case SiteEnvironment.UAT:
 					case SiteEnvironment.PRO:
-                       return @"6343";
+                       return @"16379";
                     
                     default:
                         return string.Empty;
