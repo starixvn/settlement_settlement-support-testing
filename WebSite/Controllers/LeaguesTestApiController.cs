@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Fanex.Caching;
+using Fanex.Caching.Redis;
+using System;
 using System.Configuration;
 using System.Web.Http;
-using Fanex.Caching;
-using Fanex.Caching.Redis;
 using WebSite.Models;
 using WebSite.Services;
 
@@ -37,7 +37,9 @@ namespace WebSite.Controllers
         [HttpGet, Route("get")]
         public IHttpActionResult Get()
         {
-            int leagueId, leagueIdOtherSport, leagueIdVirtualCricket;
+            int leagueId, leagueIdVirtualCricket;
+            string leagueIdOtherSport;
+
             cache.TryGet(KEY_LEAGUEID, out leagueId);
             cache.TryGet(KEY_LEAGUEID_OTHERSPORT, out leagueIdOtherSport);
             cache.TryGet(KEY_LEAGUEID_VIRTUALCRICKET, out leagueIdVirtualCricket);
@@ -69,11 +71,11 @@ namespace WebSite.Controllers
             var val = model.LeagueIds.Replace(" ", string.Empty);
             if (model.IsClear)
             {
-                cache.Set(KEY_LEAGUEID_OTHERSPORT, 0, cachePolicy);
+                cache.Set(KEY_LEAGUEID_OTHERSPORT, "", cachePolicy);
             }
             else
             {
-                cache.Set(KEY_LEAGUEID_OTHERSPORT, int.Parse(val), cachePolicy);
+                cache.Set(KEY_LEAGUEID_OTHERSPORT, val, cachePolicy);
             }
 
             return Ok(new Result());
