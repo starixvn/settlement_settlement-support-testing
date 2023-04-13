@@ -261,6 +261,7 @@
     <Compile Include="Controllers\AutoTestApiController.cs" />
     <Compile Include="Controllers\BalanceApiController.cs" />
     <Compile Include="Controllers\BroadCastController.cs" />
+    <Compile Include="Controllers\CashOutApiController.cs" />
     <Compile Include="Controllers\CloneApiController.cs" />
     <Compile Include="Controllers\DeleteMatchTestApiController.cs" />
     <Compile Include="Controllers\ExternalResultsApiController.cs" />
@@ -273,6 +274,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\CashOut\CalcRequest.cs" />
+    <Compile Include="Models\CashOut\RefundRequest.cs" />
     <Compile Include="Models\CloneResultDetailModel.cs" />
     <Compile Include="Models\DeleteMatchRequest.cs" />
     <Compile Include="Models\DeleteEventResponse.cs" />
@@ -291,6 +294,8 @@
     <Compile Include="Models\Result.cs" />
     <Compile Include="Models\ResultDetailModel.cs" />
     <Compile Include="Models\SportTypeRequest.cs" />
+    <Compile Include="Models\CashOut\VoidBetApiModel.cs" />
+    <Compile Include="Models\CashOut\VoidBetInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\LeaguesTestService.native.cs" />
     <Compile Include="Services\QueryService.cs" />
