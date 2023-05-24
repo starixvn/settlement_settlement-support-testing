@@ -1,7 +1,13 @@
 ﻿<Functions>
-	<Setting Key ="NAP_Set_CloneResultDetailSel" SpName="NAP_CloneResultDetailSel_UAT3" DbName="DBPRO.bodb02.bodbAdminNet.UAT" />
-	<Setting Key ="NAP_Set_CloneResultDetailIns" SpName="NAP_CloneResultDetailToSIT_UAT3" DbName="DBPRO.bodb02.bodbAdminNet.SIT" />
-	<Setting Key="DBA_BalanceMemberSel" SpName="DBA_BalanceMemberSel" DbName="DBTXN.bodb02.bodbAdminNet" />
-	<Setting Key="NAP_Set_ProviderExternalResultDetailSportsIns_SIT" SpName="NAP_Set_ExternalResult_Ins_UAT3" DbName="DBPRO.bodb02.bodbAdminNet" />
-	<Setting Key="Kaden_GetMatchForTesting" SpName="Kaden_GetMatchForTesting" DbName="DBPRO.bodb02.bodbAdminNet" />
+  <Setting Key ="NAP_Set_CloneResultDetailSel" SpName="NAP_CloneResultDetailSel_UAT3" DbName="DBPRO.bodb02.bodbAdminNet.UAT" />
+  <Setting Key ="NAP_Set_CloneResultDetailIns" SpName="NAP_CloneResultDetailToSIT_UAT3" DbName="DBPRO.bodb02.bodbAdminNet.SIT" />
+  <Setting Key="DBA_BalanceMemberSel" SpName="DBA_BalanceMemberSel" DbName="DBTXN.bodb02.bodbAdminNet" />
+  <Setting Key="NAP_Set_ProviderExternalResultDetailSportsIns_SIT" SpName="NAP_Set_ExternalResult_Ins_UAT3" DbName="DBPRO.bodb02.bodbAdminNet" />
+  <Setting Key="Kaden_GetMatchForTesting" SpName="Kaden_GetMatchForTesting" DbName="DBPRO.bodb02.bodbAdminNet" />
+
+  <Function Name="AutoInstant">
+    <Setting Key="AutoPayout_InsertResult" SpName="NAP_Set_AutoPayout_ResultDetailIns" DbName="DBPRO.bodb02.bodbAdminNet" />
+    <Setting Key="NAP_Set_AutoPayout_ProviderResultDetailUpd" SpName="NAP_Set_AutoPayout_ProviderResultDetailUpd" DbName="DBPRO.bodb02.bodbAdminNet" />
+    <Setting Key="NAP_Set_AutoInstant_ProviderResultDetailIns" SpName="NAP_Set_AutoInstant_ProviderResultDetailIns" DbName="DBPRO.bodb02.bodbAdminNet" />
+  </Function>
 </Functions>

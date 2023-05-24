@@ -8,7 +8,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebSite.Criteria;
 using WebSite.Models;
-using WebSite.Models.ExternalResults;
 
 namespace WebSite.Services
 {
@@ -122,7 +121,7 @@ namespace WebSite.Services
             }
         }
 
-        public async Task<Result> PushScore(QueryModel request)
+        public async Task<Result> PushScore(Models.ExternalResults.QueryModel request)
         {
             var criteria = new PushExternalResultCriteria
             {

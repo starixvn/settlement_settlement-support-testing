@@ -251,13 +251,20 @@
     <Content Include="App_Data\SPName.xml" />
     <Content Include="Global.asax" />
     <Content Include="leagues-test.html" />
+    <Content Include="normal.html" />
     <Content Include="scripts\broad-cast.js" />
     <Content Include="scripts\jquery-1.8.3.min.js" />
     <Content Include="scripts\sites.js" />
+    <Content Include="soccerway.html" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Common\Helper.cs" />
+    <Compile Include="Common\Validation.cs" />
+    <Compile Include="Constants\ErrorCode.cs" />
+    <Compile Include="Constants\ErrorMessage.cs" />
+    <Compile Include="Constants\Sources.cs" />
     <Compile Include="Controllers\AutoTestApiController.cs" />
     <Compile Include="Controllers\BalanceApiController.cs" />
     <Compile Include="Controllers\BroadCastController.cs" />
@@ -266,14 +273,20 @@
     <Compile Include="Controllers\DeleteMatchTestApiController.cs" />
     <Compile Include="Controllers\ExternalResultsApiController.cs" />
     <Compile Include="Controllers\LeaguesTestApiController.cs" />
+    <Compile Include="Controllers\SoccerController.cs" />
+    <Compile Include="Criteria\AddResultCriteria.cs" />
+    <Compile Include="Criteria\AddSoccerWayResultCriteria.cs" />
     <Compile Include="Criteria\CloneResultDetailCriteria.cs" />
     <Compile Include="Criteria\GetBalanceCriteria.cs" />
     <Compile Include="Criteria\GetMatchBySportCriteria.cs" />
     <Compile Include="Criteria\GetResultDetailCriteria.cs" />
+    <Compile Include="Criteria\InsertMatchScoresCriteria.cs" />
     <Compile Include="Criteria\PushExternalResultCriteria.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AutoInstantMatch.cs" />
+    <Compile Include="Models\AutoInstantScore.cs" />
     <Compile Include="Models\CashOut\CalcRequest.cs" />
     <Compile Include="Models\CashOut\RefundRequest.cs" />
     <Compile Include="Models\CloneResultDetailModel.cs" />
@@ -286,19 +299,28 @@
     <Compile Include="Models\GetBalanceRequest.cs" />
     <Compile Include="Models\GetResultDetailRequest.cs" />
     <Compile Include="Models\ExternalResources.cs" />
+    <Compile Include="Constants\GoalType.cs" />
     <Compile Include="Models\LeaguesTestModel.cs" />
+    <Compile Include="Models\ListQueryModel.cs" />
     <Compile Include="Models\Match.cs" />
+    <Compile Include="Models\MatchSource.cs" />
+    <Compile Include="Models\MatchViewModel.cs" />
+    <Compile Include="Models\QueryModel.cs" />
     <Compile Include="Models\Resources.cs" />
     <Compile Include="Models\ExternalResourcesItem.cs" />
     <Compile Include="Models\ResourcesItem.cs" />
     <Compile Include="Models\Result.cs" />
     <Compile Include="Models\ResultDetailModel.cs" />
+    <Compile Include="Models\Score.cs" />
+    <Compile Include="Models\ScoreViewModel.cs" />
     <Compile Include="Models\SportTypeRequest.cs" />
     <Compile Include="Models\CashOut\VoidBetApiModel.cs" />
     <Compile Include="Models\CashOut\VoidBetInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\LeaguesTestService.native.cs" />
+    <Compile Include="Services\ProviderResultService.native.cs" />
     <Compile Include="Services\QueryService.cs" />
+    <Compile Include="Services\SoccerResultService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -350,9 +372,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Content\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
