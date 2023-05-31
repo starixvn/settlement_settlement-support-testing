@@ -273,6 +273,7 @@
     <Compile Include="Controllers\DeleteMatchTestApiController.cs" />
     <Compile Include="Controllers\ExternalResultsApiController.cs" />
     <Compile Include="Controllers\LeaguesTestApiController.cs" />
+    <Compile Include="Controllers\MonitoringRefreshFunctionController.cs" />
     <Compile Include="Controllers\SoccerController.cs" />
     <Compile Include="Criteria\AddResultCriteria.cs" />
     <Compile Include="Criteria\AddSoccerWayResultCriteria.cs" />
@@ -362,6 +363,7 @@
     <Content Include="Views\web.config" />
     <Content Include="Views\BroadCast\Menu.cshtml" />
     <Content Include="Views\BroadCast\NumberGame.cshtml" />
+    <Content Include="monitoring-refresh-function.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
