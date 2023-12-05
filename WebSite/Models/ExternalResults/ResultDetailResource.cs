@@ -12,5 +12,16 @@ namespace WebSite.Models.ExternalResults
 
         [XmlAttribute("Away")]
         public string AwayValue { get; set; }
+
+
+        public bool ShouldSerializeAwayValue()
+        {
+            return !string.IsNullOrEmpty(AwayValue);
+        }
+
+        public bool ShouldSerializeHomeValue()
+        {
+            return !string.IsNullOrEmpty(HomeValue);
+        }
     }
 }
