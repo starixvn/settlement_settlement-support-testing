@@ -93,6 +93,35 @@
             </table>
         </fieldset>
     </form>
+    <br>
+    <form id="UpdateResultAnySport">
+        <fieldset>
+            <legend>Update League(s) Test for service(AnySport):</legend>
+            <table cellpadding="2" cellspacing="2" border="0">
+                <tr>
+                    <td>- LeagueIds:</td>
+                    <td><input type="text" id="leagueIdsAnySport" value="" /> Ex: 1234,4343</td>
+                    <td width="70px"></td>
+                    <td>
+                        <span>LeagueIdExclude:</span>
+                        <span id="leagueIdsAnySportExclude"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="button" id="SubmitAnySport" value="Submit">
+                        <input type="button" id="ClearLeagueAnySportTest" value="Clear league test PRO">
+                    </td>
+                    <td></td>
+                    <td>
+                        <span>LeagueIdInclude:</span>
+                        <span id="leagueIdsAnySportInclude"></span>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+    </form>
 </body>
 </html>
 
@@ -111,6 +140,9 @@
                 $('#leagueIdOtherSportInclude').html(result.leagueIdOtherSport)
                 $('#leagueIdVirtualCricketExclude').html(result.leagueIdVirtualCricket)
                 $('#leagueIdVirtualCricketInclude').html(result.leagueIdVirtualCricket)
+                $('#leagueIdsAnySportExclude').html(result.leagueIdsTest)
+                $('#leagueIdsAnySportInclude').html(result.leagueIdsTest)
+
             }
         });
     }
@@ -184,6 +216,35 @@
             $.ajax({
                 type: "POST",
                 url: "api/league-test/update-virtual-cricket",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify(params),
+                success: function (result) {
+                    location.reload();
+
+                },
+                error: function () {
+                    console.log("Error");
+                },
+                complete: function () {
+                    console.log("Complete");
+                }
+            });
+        }
+
+    });
+
+    $('#ClearLeagueAnySportTest').click(function (e) {
+        var con = confirm("Are you sure you want to clear league test for Any Sport on the production?")
+        if (con) {
+            var params = {
+                LeagueIds: "",
+                IsClear: true
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "api/league-test/update-any-sport",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 data: JSON.stringify(params),
@@ -298,6 +359,44 @@
         });
     });
 
+    $('#SubmitAnySport').click(function (e) {
+        var leagueids = $('#leagueIdsAnySport').val();
+
+        if (leagueids === "") {
+            alert("Please input leagueId.");
+            return;
+        }
+
+        var isInValidValue = leagueids.split(',').some(x => !/^-?\d+$/.test(x));
+        if (isInValidValue) {
+            alert("Please input correct leagueId(s).");
+            return;
+        }
+
+        var params = {
+            LeagueIds: leagueids,
+            IsClear: false
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "api/league-test/update-any-sport",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(params),
+            success: function (result) {
+                location.reload();
+
+            },
+            error: function () {
+                console.log("Error");
+            },
+            complete: function () {
+                console.log("Complete");
+            }
+        });
+    });
+
     function validate(evt) {
         var theEvent = evt || window.event;
 
@@ -332,5 +431,23 @@
             theEvent.returnValue = false;
             if (theEvent.preventDefault) theEvent.preventDefault();
         }
+    }
+
+    function validateLeague(evt) {
+        var theEvent = evt || window.event;
+
+        // Handle paste
+        if (theEvent.type === 'paste') {
+            key = event.clipboardData.getData('text/plain');
+        } else {
+            // Handle key press
+            var key = theEvent.keyCode || theEvent.which;
+            key = String.fromCharCode(key);
+        }
+        //var regex = /[0-9]|\,/;
+        //if (!regex.test(key)) {
+        //    theEvent.returnValue = false;
+        //    if (theEvent.preventDefault) theEvent.preventDefault();
+        //}
     }
 </script>
