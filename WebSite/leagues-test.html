@@ -299,7 +299,13 @@
         var leagueids = $('#leagueIdOtherSport').val();
 
         if (leagueids === "") {
-            alert("Please input leagueId.");
+            alert("Please input leagueId(s).");
+            return;
+        }
+
+        var isInValidValue = leagueids.split(',').some(x => !/^-?\d+$/.test(x));
+        if (isInValidValue) {
+            alert("Please input correct leagueId(s).");
             return;
         }
 
