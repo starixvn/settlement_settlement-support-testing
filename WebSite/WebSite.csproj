@@ -239,15 +239,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Configurations\Web.config.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Web.config.txt</LastGenOutput>
-    </Content>
-    <Content Include="App_Configurations\Web.config.txt">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Web.config.tt</DependentUpon>
-    </Content>
+    <Content Include="App_Configurations\Web.KLDR.ConnectionStrings.config" />
+    <Content Include="App_Configurations\Web.Local.ConnectionStrings.config" />
+    <Content Include="App_Configurations\Web.SIT.ConnectionStrings.config" />
+    <Content Include="App_Configurations\Web.UAT.ConnectionStrings.config" />
     <Content Include="App_Data\SPName.xml" />
     <Content Include="Global.asax" />
     <Content Include="leagues-test.html" />
@@ -328,34 +323,9 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="App_Configurations\Configuration.ttinclude" />
-    <Content Include="App_Configurations\Web.LOCAL.config">
-      <DependentUpon>Web.config.tt</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="App_Configurations\Web.Local.ConnectionStrings.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="App_Configurations\Web.SIT.config">
-      <DependentUpon>Web.config.tt</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="App_Configurations\Web.SIT.ConnectionStrings.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="App_Configurations\Web.UAT.config">
-      <DependentUpon>Web.config.tt</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="App_Configurations\Web.UAT.ConnectionStrings.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="clone-data.cshtml" />
     <Content Include="view-balance.cshtml" />
     <Content Include="external-results.cshtml" />
-    <None Include="App_Configurations\Web.PRO.config">
-      <DependentUpon>Web.config.tt</DependentUpon>
-    </None>
     <Content Include="Views\BroadCast\HappyFive.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
@@ -364,6 +334,21 @@
     <Content Include="Views\BroadCast\Menu.cshtml" />
     <Content Include="Views\BroadCast\NumberGame.cshtml" />
     <Content Include="monitoring-refresh-function.cshtml" />
+    <Content Include="App_Configurations\Web.KLDR.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Configurations\Web.LOCAL.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Configurations\Web.PRO.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Configurations\Web.SIT.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Configurations\Web.UAT.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
