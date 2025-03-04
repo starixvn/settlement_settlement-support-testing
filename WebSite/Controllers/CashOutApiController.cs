@@ -1,6 +1,5 @@
 ﻿using System.Web.Http;
 using System.Web.Http.Cors;
-using WebSite.Models.CashOut;
 
 namespace WebSite.Controllers
 {
@@ -9,27 +8,57 @@ namespace WebSite.Controllers
     public class CashOutApiController : ApiController
     {
         [Route("VoidBet"), HttpPost]
-        public IHttpActionResult VoidBet(VoidBetApiModel request)
+        public IHttpActionResult VoidBet(object request)
         {
+            string requestData = Newtonsoft.Json.JsonConvert.SerializeObject(request);
+            RequestMonitorService.AddRequest(requestData, "VoidBet");
             return Ok(request);
         }
 
         [Route("UndoVoidBet"), HttpPost]
-        public IHttpActionResult UndoVoidBet(VoidBetApiModel request)
+        public IHttpActionResult UndoVoidBet(object request)
         {
+            string requestData = Newtonsoft.Json.JsonConvert.SerializeObject(request);
+            RequestMonitorService.AddRequest(requestData, "UndoVoidBet");
             return Ok(request);
         }
 
         [Route("CashOutResultUpdate"), HttpPost]
-        public IHttpActionResult CashOutResultUpdate(CalcRequest request)
+        public IHttpActionResult CashOutResultUpdate(object request)
         {
+            string requestData = Newtonsoft.Json.JsonConvert.SerializeObject(request);
+            RequestMonitorService.AddRequest(requestData, "CashOutResultUpdate");
             return Ok(request);
         }
 
         [Route("CashOutResultRefund"), HttpPost]
-        public IHttpActionResult CashOutResultRefund(RefundRequest request)
+        public IHttpActionResult CashOutResultRefund(object request)
         {
+            string requestData = Newtonsoft.Json.JsonConvert.SerializeObject(request);
+            RequestMonitorService.AddRequest(requestData, "CashOutResultRefund");
             return Ok(request);
+        }
+
+        [Route("JackTimeCashOut/ResultMarkets"), HttpPut]
+        public IHttpActionResult ResultMarkets(object request)
+        {
+            string requestData = Newtonsoft.Json.JsonConvert.SerializeObject(request);
+            RequestMonitorService.AddRequest(requestData, "ResultMarkets");
+            return Ok(request);
+        }
+
+        [Route("GetMarkets"), HttpGet]
+        public IHttpActionResult GetMarkets(int matchIds)
+        {
+            RequestMonitorService.AddRequest("MatchId: " + matchIds, "GetMarkets");
+            var requestData = RequestMonitorService.GetMarket();
+            requestData.ForEach(r => r.MatchId = matchIds);
+            return Ok(new MarketResponse
+            {
+                IsSuccess = true,
+                Message = string.Empty,
+                Data = requestData
+            });
         }
 
         [Route("Test"), HttpGet]
