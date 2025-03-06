@@ -39,14 +39,6 @@ namespace WebSite.Controllers
             return Ok(request);
         }
 
-        [Route("JackTimeCashOut/ResultMarkets"), HttpPut]
-        public IHttpActionResult ResultMarkets(object request)
-        {
-            string requestData = Newtonsoft.Json.JsonConvert.SerializeObject(request);
-            RequestMonitorService.AddRequest(requestData, "ResultMarkets");
-            return Ok(request);
-        }
-
         [Route("GetMarkets"), HttpGet]
         public IHttpActionResult GetMarkets(int matchIds)
         {

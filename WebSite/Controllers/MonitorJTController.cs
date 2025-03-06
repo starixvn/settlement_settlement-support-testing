@@ -5,13 +5,6 @@ using System.Web.Http.Cors;
 [System.Web.Http.RoutePrefix("api/monitor")]
 public class MonitorJTController : ApiController
 {
-    [Route("GetRequests"), HttpGet]
-    public IHttpActionResult VoidBet()
-    {
-        var requestData = RequestMonitorService.GetRequests();
-        return Ok(requestData);
-    }
-
     [Route("SendMarket"), HttpPost]
     public IHttpActionResult SendMarket([FromBody] MarketRequest markets)
     {
@@ -24,6 +17,13 @@ public class MonitorJTController : ApiController
     {
         var requestData = RequestMonitorService.GetMarket();
         return Ok(requestData);
+    }
+
+    [Route("ClearMarket"), HttpPost]
+    public IHttpActionResult GetMarkets([FromBody] Market market)
+    {
+        RequestMonitorService.ClearMarket(market);
+        return Ok();
     }
 
     [Route("GetMarkets"), HttpPost]

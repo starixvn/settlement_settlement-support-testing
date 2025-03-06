@@ -18,15 +18,14 @@ public static class RequestMonitorService
 
     public static void AddMarket(string markets)
     {
-        _markets = new List<Market>();
-        var listMarket = markets.Split(',');
+        var listMarket = markets.Replace("(", string.Empty).Replace(")", string.Empty).Split(',');
         foreach (var market in listMarket)
         {
-            var marketData = market.Split('-');
+            var dashIndex = market.IndexOf('-');
             _markets.Add(new Market
             {
-                BetType = int.Parse(marketData[0]),
-                GoalLine = decimal.Parse(marketData[1])
+                BetType = int.Parse(market.Substring(0, dashIndex)),
+                GoalLine = decimal.Parse(market.Substring(dashIndex + 1))
             });
         }
     }
@@ -48,5 +47,10 @@ public static class RequestMonitorService
     public static List<Market> GetMarket()
     {
         return _markets;
+    }
+
+    public static void ClearMarket(Market market)
+    {
+        _markets.RemoveAll(m => m.BetType == market.BetType && m.GoalLine == market.GoalLine);
     }
 }

@@ -353,7 +353,7 @@
     <Content Include="App_Configurations\Web.UAT.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="MonitorJT.cshtml" />
+    <Content Include="AddMarketJT.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
