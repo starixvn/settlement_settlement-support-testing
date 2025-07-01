@@ -51,78 +51,47 @@
     }
 
     function getParam() {
-        return param = {
-            MatchId: $('#MatchId').val(),
-            ResultInfo: [(setValueResultScore())],
+        return {
+            MatchId: parseInt($('#MatchId').val()),
+            ResultInfo: [setValueResultScore()],
             SecurityToken: "3BEAED79-1305-4213-BF4D-3B10DF385BA4"
         };
     }
 
     function setValueResultScore() {
-        return resultScore = {
-            SourceId: $('#SourceId').val(),
-            TypeId: $('#TypeId').val(),
+        return {
+            SourceId: parseInt($('#SourceId').val()),
+            TypeId: parseInt($('#TypeId').val()),
             HomeValue: $('#HomeValue').val(),
             AwayValue: $('#AwayValue').val()
         };
     }
 
     function updateResult() {
-
-        var param = getParam();
-
-        $.ajax({
-            type: "POST",
-            url: "api/Match/singleMatch",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            data: JSON.stringify(param),
-            success: function (result) {
-
-                if (result.ErrCode === 0) {
-                    alert("Success");
-                } else {
-                    alert(result.ErrMsg);
-                }
-
-            },
-            error: function () {
-                alert("Error");
-            }
-        });
-    }
-
-    $('#Add').click(function (e) {
-        addMultiResult();
-    })
-
-    function addMultiResult() {
-        multiParam.push(setValueResultScore())
-        if (resultScore.length !== 1) {
-            resultScore[resultScore.length - 1].MatchId = resultScore[resultScore.length - 2].MatchId + 1;
-        }
-    };
-
-    function multiUpdateResult() {
         if (!validationForm()) {
             return;
         }
 
+        var param = getParam();
+        console.log('Sending data:', JSON.stringify(param));
+
         $.ajax({
             type: "POST",
-            url: "api/Match/multipleMatch",
+            url: "api/match/single-match",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
-            data: JSON.stringify(multiParam),
-            success: function () {
+            data: JSON.stringify(param),
+            success: function (result) {
+                console.log('Response:', result);
                 if (result.ErrCode === 0) {
                     alert("Success");
                 } else {
                     alert(result.ErrMsg);
                 }
             },
-            error: function () {
-                alert("Error");
+            error: function (xhr, status, error) {
+                console.error('Error:', xhr.responseText);
+                alert("Error: " + error + "\nStatus: " + status);
             }
         });
     }

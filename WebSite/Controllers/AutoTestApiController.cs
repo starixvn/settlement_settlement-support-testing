@@ -1,30 +1,24 @@
-﻿using System.Web.Http;
-using System.Web.Http.Cors;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using WebSite.Models;
 using WebSite.Services;
 
 namespace WebSite.Controllers
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
-    [RoutePrefix("api/auto-test")]
-    public class AutoTestApiController : ApiController
+    [EnableCors("AllowAll")]
+    [Route("api/auto-test")]
+    [ApiController]
+    public class AutoTestApiController(QueryService queryService) : ControllerBase
     {
-        private readonly QueryService queryService;
-
-        public AutoTestApiController()
-        {
-            queryService = new QueryService();
-        }
-
-        [Route("get-match-by-sport-type"), HttpPost]
-        public IHttpActionResult GetMatchBySportId(SportTypeRequest request)
+        [HttpPost("get-match-by-sport-type")]
+        public IActionResult GetMatchBySportId([FromBody] SportTypeRequest request)
         {
             var matchId = queryService.GetMatchBySportType(request);
             return Ok(new { matchId });
         }
 
-        [Route("test"), HttpGet]
-        public IHttpActionResult TestMatchBySportId(int sporttype, bool isTicket)
+        [HttpGet("test")]
+        public IActionResult TestMatchBySportId(int sporttype, bool isTicket)
         {
             var request = new SportTypeRequest
             {

@@ -1,19 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Web.Configuration;
-using WebSite.Constants;
+﻿using WebSite.Constants;
 using WebSite.Models;
 
 namespace WebSite.Common
 {
     public static class Validation
     {
-        public static string CurrentSecurityToken
-        {
-            get
-            {
-                return WebConfigurationManager.AppSettings["SecurityToken"];
-            }
-        }
+        public static string CurrentSecurityToken = "3BEAED79-1305-4213-BF4D-3B10DF385BA4";
 
         private static Result ValidScore(IList<Score> resultInfo)
         {

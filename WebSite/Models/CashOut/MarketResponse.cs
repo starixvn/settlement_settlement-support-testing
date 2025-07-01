@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-public class MarketResponse
+﻿public class MarketResponse
 {
     public bool IsSuccess { get; set; }
 
