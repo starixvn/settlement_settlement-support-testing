@@ -1,15 +1,12 @@
 ﻿using Fanex.Caching;
-using Fanex.Caching.Redis;
-using System;
-using System.Configuration;
-using System.Web.Http;
+using Microsoft.AspNetCore.Mvc;
 using WebSite.Models;
-using WebSite.Services;
 
 namespace WebSite.Controllers
 {
-    [RoutePrefix("api/league-test")]
-    public class LeaguesTestApiController : ApiController
+    [Route("api/league-test")]
+    [ApiController]
+    public class LeaguesTestApiController(ICache cache) : ControllerBase
     {
         private const string KEY_LEAGUEID = "Settlement-AutoPayout-AutoInstant-LeagueId";
 
@@ -21,23 +18,9 @@ namespace WebSite.Controllers
 
         private const double CACHE_EXPIRED_IN_DAYS = 1095;
 
-        private readonly LeaguesTestService leaguesTestService;
 
-        private readonly ICache cache;
-
-        public LeaguesTestApiController()
-        {
-            this.leaguesTestService = new LeaguesTestServiceImp();
-
-            this.cache = new RedisCache(new RedisCacheOptions
-            {
-                ConnectionString = $"{ConfigurationManager.AppSettings["Redis.Server"]}:{ConfigurationManager.AppSettings["Redis.Port"]},password={ConfigurationManager.AppSettings["Redis.Password"]},defaultDatabase={ConfigurationManager.AppSettings["Redis.DefaultDatabase"]}",
-                ApplicationName = ConfigurationManager.AppSettings["Redis.AppName"]
-            });
-        }
-
-        [HttpGet, Route("get")]
-        public IHttpActionResult Get()
+        [HttpGet("get")]
+        public IActionResult Get()
         {
             int leagueId, leagueIdVirtualCricket;
             string leagueIdOtherSport, leagueIdsTest;
@@ -49,8 +32,8 @@ namespace WebSite.Controllers
             return Ok(new { leagueId, leagueIdOtherSport, leagueIdVirtualCricket, leagueIdsTest });
         }
 
-        [HttpPost, Route("update")]
-        public IHttpActionResult Update(LeaguesTestModel model)
+        [HttpPost("update")]
+        public IActionResult Update([FromBody] LeaguesTestModel model)
         {
             var cachePolicy = new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(CACHE_EXPIRED_IN_DAYS));
             var val = model.LeagueIds.Replace(" ", string.Empty);
@@ -66,8 +49,8 @@ namespace WebSite.Controllers
             return Ok(new Result());
         }
 
-        [HttpPost, Route("update-other-sport")]
-        public IHttpActionResult UpdateOtherSport(LeaguesTestModel model)
+        [HttpPost("update-other-sport")]
+        public IActionResult UpdateOtherSport([FromBody] LeaguesTestModel model)
         {
             var cachePolicy = new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(CACHE_EXPIRED_IN_DAYS));
             var val = model.LeagueIds.Replace(" ", string.Empty);
@@ -83,8 +66,8 @@ namespace WebSite.Controllers
             return Ok(new Result());
         }
 
-        [HttpPost, Route("update-virtual-cricket")]
-        public IHttpActionResult UpdateVirtualCricket(LeaguesTestModel model)
+        [HttpPost("update-virtual-cricket")]
+        public IActionResult UpdateVirtualCricket([FromBody] LeaguesTestModel model)
         {
             var cachePolicy = new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(CACHE_EXPIRED_IN_DAYS));
             var val = model.LeagueIds.Replace(" ", string.Empty);
@@ -100,8 +83,8 @@ namespace WebSite.Controllers
             return Ok(new Result());
         }
 
-        [HttpPost, Route("update-any-sport")]
-        public IHttpActionResult UpdateAnySport(LeaguesTestModel model)
+        [HttpPost("update-any-sport")]
+        public IActionResult UpdateAnySport([FromBody] LeaguesTestModel model)
         {
             var cachePolicy = new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(CACHE_EXPIRED_IN_DAYS));
             var val = model.LeagueIds.Replace(" ", string.Empty);

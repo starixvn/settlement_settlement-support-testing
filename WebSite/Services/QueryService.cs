@@ -1,179 +1,139 @@
 ﻿using AutoMapper;
-using Fanex.Data;
 using Fanex.Data.Repository;
-using Kaden.XmlConverter;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+using Fanex.Settlement.Converter.Services;
 using WebSite.Criteria;
 using WebSite.Models;
 
-namespace WebSite.Services
+namespace WebSite.Services;
+
+public interface QueryService
 {
-    public class QueryService
+    Task<CloneResultDetailModel> Get(int matchId);
+
+    Task<Result> PushScore(Models.ExternalResults.QueryModel request);
+
+    int GetMatchBySportType(SportTypeRequest request);
+
+    IEnumerable<DeleteEventResponse> DeleteMatch(DeleteMatchRequest request);
+}
+
+public class QueryServiceImp(IDynamicRepository repository, XmlConvertService xmlConvertService) : QueryService
+{
+    public async Task<CloneResultDetailModel> Get(int matchId)
     {
-        private readonly IDynamicRepository repository;
-
-        private readonly XmlConvertService xmlConvertService;
-
-        public QueryService()
+        var criteria = new GetResultDetailCriteria
         {
-            repository = new DynamicRepository();
-            xmlConvertService = new XmlConvertServiceImp();
+            MatchId = matchId
+        };
+
+        var data = await repository.FetchMultipleAsync<ResultDetailModel, ExternalResultDetailModel>(criteria);
+
+        return new CloneResultDetailModel
+        {
+            ResultDetails = data.Item1.ToList(),
+            ExternalResultDetails = data.Item2.ToList()
+        };
+    }
+
+    private string ResultDetail(List<ResultDetailModel> resultDetails)
+    {
+        var config = new MapperConfiguration(cfg =>
+        {
+            cfg.CreateMap<ResultDetailModel, ResourcesItem>();
+        });
+        var iMapper = config.CreateMapper();
+
+        var resourceItems = new List<ResourcesItem>();
+        foreach (var resultDetail in resultDetails)
+        {
+            var item = iMapper.Map<ResultDetailModel, ResourcesItem>(resultDetail);
+            resourceItems.Add(item);
         }
 
-        public async Task<CloneResultDetailModel> Get(int matchId)
+        var resources = new Models.Resources
         {
-            var criteria = new GetResultDetailCriteria
-            {
-                MatchId = matchId
-            };
+            ResourceItems = resourceItems
+        };
 
-            var data = await repository.FetchMultipleAsync<ResultDetailModel, ExternalResultDetailModel>(criteria);
+        return xmlConvertService.Serialize(resources);
+    }
 
-            return new CloneResultDetailModel
-            {
-                ResultDetails = data.Item1.ToList(),
-                ExternalResultDetails = data.Item2.ToList()
-            };
+    private string ExternalResultDetail(List<ExternalResultDetailModel> externalResultDetails)
+    {
+        var config = new MapperConfiguration(cfg =>
+        {
+            cfg.CreateMap<ExternalResultDetailModel, ExternalResourcesItem>();
+        });
+        var iMapper = config.CreateMapper();
+
+        var resourceItems = new List<ExternalResourcesItem>();
+        foreach (var resultDetail in externalResultDetails)
+        {
+            var item = iMapper.Map<ExternalResultDetailModel, ExternalResourcesItem>(resultDetail);
+
+            resourceItems.Add(item);
         }
 
-        public async Task<Result> Clone(CloneResultDetailModel request)
+        var resources = new ExternalResources
         {
-            var resultDetail = ResultDetail(request.ResultDetails);
-            var externalResultDetail = ExternalResultDetail(request.ExternalResultDetails);
+            ResourceItems = resourceItems
+        };
 
-            var criteria = new CloneResultDetailCriteria
-            {
-                MatchId = request.MatchId,
-                ResultDetail = resultDetail,
-                ExternalResult = externalResultDetail
-            };
+        return xmlConvertService.Serialize(resources);
+    }
 
-            await repository.ExecuteAsync(criteria);
-
-            return new Result
-            {
-                ErrCode = criteria.ErrCode,
-                ErrMsg = criteria.ErrMsg
-            };
-        }
-
-        private string ResultDetail(List<ResultDetailModel> resultDetails)
+    public async Task<Result> PushScore(Models.ExternalResults.QueryModel request)
+    {
+        var criteria = new PushExternalResultCriteria
         {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<ResultDetailModel, ResourcesItem>();
-            });
-            var iMapper = config.CreateMapper();
+            MatchId3rd = request.MatchId3rd,
+            MatchId = request.MatchId,
+            SourceId = request.SourceId,
+        };
 
-            var resourceItems = new List<ResourcesItem>();
-            foreach (var resultDetail in resultDetails)
+        var resources = new Models.ExternalResults.Resources
+        {
+            ResourceItems = request.Results
+        };
+
+        criteria.Resources = xmlConvertService.Serialize(resources);
+        await repository.ExecuteAsync(criteria);
+
+        return new Result
+        {
+            ErrCode = criteria.ErrCode,
+            ErrMsg = criteria.ErrMsg
+        };
+    }
+
+    public int GetMatchBySportType(SportTypeRequest request)
+    {
+        var criteria = new GetMatchBySportCriteria
+        {
+            SportType = request.Id,
+            IsTicket = request.IsTicket
+        };
+
+        var match = repository.Get<Match>(criteria);
+        return match.MatchId;
+    }
+
+    public IEnumerable<DeleteEventResponse> DeleteMatch(DeleteMatchRequest request)
+    {
+        var result = new List<DeleteEventResponse>();
+        foreach (var requestMatchId in request.MatchIds)
+        {
+            if (requestMatchId % 2 == 0)
             {
-                var item = iMapper.Map<ResultDetailModel, ResourcesItem>(resultDetail);
-                resourceItems.Add(item);
+                var resultByMatchId = new DeleteEventResponse(requestMatchId, true, "MatchSuccess");
+                result.Add(resultByMatchId);
             }
-
-            var resources = new Models.Resources
+            else
             {
-                ResourceItems = resourceItems
-            };
-
-            return xmlConvertService.Serialize(resources);
-        }
-
-        private string ExternalResultDetail(List<ExternalResultDetailModel> externalResultDetails)
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<ExternalResultDetailModel, ExternalResourcesItem>();
-            });
-            var iMapper = config.CreateMapper();
-
-            var resourceItems = new List<ExternalResourcesItem>();
-            foreach (var resultDetail in externalResultDetails)
-            {
-                var item = iMapper.Map<ExternalResultDetailModel, ExternalResourcesItem>(resultDetail);
-
-                resourceItems.Add(item);
-            }
-
-            var resources = new ExternalResources
-            {
-                ResourceItems = resourceItems
-            };
-
-            return xmlConvertService.Serialize(resources);
-        }
-
-        public async Task<DataSet> GetBalance(GetBalanceRequest request)
-        {
-            var criteria = new GetBalanceCriteria
-            {
-                MatchId = request.MatchId,
-                CustId = request.CustId
-            };
-
-            using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
-            {
-                return await objectDb.ExecuteDataSetAsync(criteria).ConfigureAwait(false);
+                var resultByMatchId = new DeleteEventResponse(requestMatchId, false, "MatchFail");
+                result.Add(resultByMatchId);
             }
         }
-
-        public async Task<Result> PushScore(Models.ExternalResults.QueryModel request)
-        {
-            var criteria = new PushExternalResultCriteria
-            {
-                MatchId3rd = request.MatchId3rd,
-                MatchId = request.MatchId,
-                SourceId = request.SourceId,
-            };
-
-            var resources = new Models.ExternalResults.Resources
-            {
-                ResourceItems = request.Results
-            };
-
-            criteria.Resources = xmlConvertService.Serialize(resources);
-            await repository.ExecuteAsync(criteria);
-
-            return new Result
-            {
-                ErrCode = criteria.ErrCode,
-                ErrMsg = criteria.ErrMsg
-            };
-        }
-
-        public int GetMatchBySportType(SportTypeRequest request)
-        {
-            var criteria = new GetMatchBySportCriteria
-            {
-                SportType = request.Id,
-                IsTicket = request.IsTicket
-            };
-
-            var match = repository.Get<Match>(criteria);
-            return match.MatchId;
-        }
-
-        public IEnumerable<DeleteEventResponse> DeleteMatch(DeleteMatchRequest request)
-        {
-            var result = new List<DeleteEventResponse>();
-            foreach (var requestMatchId in request.MatchIds)
-            {
-                if (requestMatchId % 2 == 0)
-                {
-                    var resultByMatchId = new DeleteEventResponse(requestMatchId, true, "MatchSuccess");
-                    result.Add(resultByMatchId);
-                }
-                else
-                {
-                    var resultByMatchId = new DeleteEventResponse(requestMatchId, false, "MatchFail");
-                    result.Add(resultByMatchId);
-                }
-            }
-            return result;
-        }
+        return result;
     }
 }

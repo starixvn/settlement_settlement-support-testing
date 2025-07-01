@@ -1,46 +1,47 @@
-﻿using System.Web.Http;
-using System.Web.Http.Cors;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Cors;
 
 namespace WebSite.Controllers
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
-    [RoutePrefix("api/cash-out")]
-    public class CashOutApiController : ApiController
+    [EnableCors("AllowAll")]
+    [Route("api/cash-out")]
+    [ApiController]
+    public class CashOutApiController : ControllerBase
     {
-        [Route("VoidBet"), HttpPost]
-        public IHttpActionResult VoidBet(object request)
+        [HttpPost("VoidBet")]
+        public IActionResult VoidBet([FromBody] object request)
         {
             string requestData = Newtonsoft.Json.JsonConvert.SerializeObject(request);
             RequestMonitorService.AddRequest(requestData, "VoidBet");
             return Ok(request);
         }
 
-        [Route("UndoVoidBet"), HttpPost]
-        public IHttpActionResult UndoVoidBet(object request)
+        [HttpPost("UndoVoidBet")]
+        public IActionResult UndoVoidBet([FromBody] object request)
         {
             string requestData = Newtonsoft.Json.JsonConvert.SerializeObject(request);
             RequestMonitorService.AddRequest(requestData, "UndoVoidBet");
             return Ok(request);
         }
 
-        [Route("CashOutResultUpdate"), HttpPost]
-        public IHttpActionResult CashOutResultUpdate(object request)
+        [HttpPost("CashOutResultUpdate")]
+        public IActionResult CashOutResultUpdate([FromBody] object request)
         {
             string requestData = Newtonsoft.Json.JsonConvert.SerializeObject(request);
             RequestMonitorService.AddRequest(requestData, "CashOutResultUpdate");
             return Ok(request);
         }
 
-        [Route("CashOutResultRefund"), HttpPost]
-        public IHttpActionResult CashOutResultRefund(object request)
+        [HttpPost("CashOutResultRefund")]
+        public IActionResult CashOutResultRefund([FromBody] object request)
         {
             string requestData = Newtonsoft.Json.JsonConvert.SerializeObject(request);
             RequestMonitorService.AddRequest(requestData, "CashOutResultRefund");
             return Ok(request);
         }
 
-        [Route("GetMarkets"), HttpGet]
-        public IHttpActionResult GetMarkets(int matchIds)
+        [HttpGet("GetMarkets")]
+        public IActionResult GetMarkets(int matchIds)
         {
             RequestMonitorService.AddRequest("MatchId: " + matchIds, "GetMarkets");
             var requestData = RequestMonitorService.GetMarket();
@@ -53,9 +54,9 @@ namespace WebSite.Controllers
             });
         }
 
-        [Route("Test"), HttpGet]
-        [Route("test/{matchId}/{betstatus}")]
-        public IHttpActionResult Test(int matchId, string betstatus)
+        [HttpGet("Test")]
+        [HttpGet("test/{matchId}/{betstatus}")]
+        public IActionResult Test(int matchId, string betstatus)
         {
             return Ok($"{matchId} - {betstatus}");
         }

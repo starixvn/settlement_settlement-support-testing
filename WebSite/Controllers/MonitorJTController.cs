@@ -1,41 +1,45 @@
-﻿using System.Web.Http;
-using System.Web.Http.Cors;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Cors;
 
-[EnableCors(origins: "*", headers: "*", methods: "*")]
-[System.Web.Http.RoutePrefix("api/monitor")]
-public class MonitorJTController : ApiController
+namespace WebSite.Controllers
 {
-    [Route("SendMarket"), HttpPost]
-    public IHttpActionResult SendMarket([FromBody] MarketRequest markets)
+    [EnableCors("AllowAll")]
+    [Route("api/monitor")]
+    [ApiController]
+    public class MonitorJTController : ControllerBase
     {
-        RequestMonitorService.AddMarket(markets.Request);
-        return Ok();
-    }
-
-    [Route("GetMarkets"), HttpGet]
-    public IHttpActionResult GetMarkets()
-    {
-        var requestData = RequestMonitorService.GetMarket();
-        return Ok(requestData);
-    }
-
-    [Route("ClearMarket"), HttpPost]
-    public IHttpActionResult GetMarkets([FromBody] Market market)
-    {
-        RequestMonitorService.ClearMarket(market);
-        return Ok();
-    }
-
-    [Route("GetMarkets"), HttpPost]
-    public IHttpActionResult GetMarkets([FromUri] int matchId)
-    {
-        var requestData = RequestMonitorService.GetMarket();
-        requestData.ForEach(r => r.MatchId = matchId);
-        return Ok(new MarketResponse
+        [HttpPost("SendMarket")]
+        public IActionResult SendMarket([FromBody] MarketRequest markets)
         {
-            IsSuccess = true,
-            Message = string.Empty,
-            Data = requestData
-        });
+            RequestMonitorService.AddMarket(markets.Request);
+            return Ok();
+        }
+
+        [HttpGet("GetMarkets")]
+        public IActionResult GetMarkets()
+        {
+            var requestData = RequestMonitorService.GetMarket();
+            return Ok(requestData);
+        }
+
+        [HttpPost("ClearMarket")]
+        public IActionResult ClearMarket([FromBody] Market market)
+        {
+            RequestMonitorService.ClearMarket(market);
+            return Ok();
+        }
+
+        [HttpPost("GetMarkets/{matchId}")]
+        public IActionResult GetMarkets(int matchId)
+        {
+            var requestData = RequestMonitorService.GetMarket();
+            requestData.ForEach(r => r.MatchId = matchId);
+            return Ok(new MarketResponse
+            {
+                IsSuccess = true,
+                Message = string.Empty,
+                Data = requestData
+            });
+        }
     }
 }

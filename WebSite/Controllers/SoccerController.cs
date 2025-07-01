@@ -1,70 +1,47 @@
-﻿using Fanex.Data.Repository;
-using System.Web.Http;
+﻿using Microsoft.AspNetCore.Mvc;
 using WebSite.Common;
-using WebSite.Constants;
 using WebSite.Models;
 using WebSite.Services;
 
-namespace WebSite.Controllers
+namespace WebSite.Controllers;
+
+[ApiController]
+[Route("api/match")]
+public class SoccerController(SoccerResultService soccerResultService) : ControllerBase
 {
-    [RoutePrefix("api/Match")]
-    public class SoccerController : ApiController
+    [HttpGet("Index")]
+    public IActionResult Index()
     {
-        private readonly SoccerResultService soccerResultService;
+        return Content("OK");
+    }
 
-        public SoccerController()
+    [HttpPost("goal-record")]
+    public IActionResult GoalRecord([FromBody] QueryModel model)
+    {
+        var valid = Validation.ValidResult(model);
+
+        if (valid.ErrCode > 0)
         {
-            var providerResultService = new ProviderResultServiceImp(new DynamicRepository());
-            this.soccerResultService = new SoccerResultServiceImp(providerResultService);
+            return Ok(valid);
         }
 
-        [HttpPost, Route("goalRecord")]
-        public IHttpActionResult GoalRecord(QueryModel model)
+        var result = soccerResultService.Insert(model);
+        return Ok(result);
+    }
+
+    [HttpPost("single-match")]
+    public IActionResult SingleMatch([FromBody] QueryModel model)
+    {
+        var valid = Validation.ValidResult(model);
+
+        if (valid.ErrCode > 0)
         {
-            var valid = Validation.ValidResult(model);
-
-            if (valid.ErrCode > 0)
-            {
-                return Json(valid);
-            }
-
-            var result = soccerResultService.Insert(model);
-            return Json(result);
+            return Ok(valid);
         }
-
-        [HttpPost, Route("singleMatch")]
-        public IHttpActionResult SingleMatch(QueryModel model)
+        else
         {
-            var valid = Validation.ValidResult(model);
-
-            if (valid.ErrCode > 0)
-            {
-                return Json(valid);
-            }
-            else
-            {
-                var result = soccerResultService.InsertSingleMatch(model);
-                return Json(result);
-            }
-        }
-
-        [HttpPost, Route("multipleMatch")]
-        public IHttpActionResult MultipleMatch(ListQueryModel model)
-        {
-            var multiValid = Validation.MultiValidation(model);
-
-            if (multiValid.ErrCode > 0)
-            {
-                return Json(multiValid);
-            }
-            else
-            {
-                var matchFail = soccerResultService.InsertMultiMatches(model.Matches);
-
-                return string.IsNullOrWhiteSpace(matchFail)
-                    ? Json(new Models.Result())
-                    : Json(new Models.Result { ErrCode = ErrorCode.FailMatch, ErrMsg = ErrorMessage.MatchFailed + matchFail });
-            }
+            var result = soccerResultService.InsertSingleMatch(model);
+            return Ok(result);
         }
     }
 }

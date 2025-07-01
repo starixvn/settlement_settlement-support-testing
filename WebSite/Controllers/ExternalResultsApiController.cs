@@ -1,22 +1,15 @@
-﻿using System.Threading.Tasks;
-using System.Web.Http;
+﻿using Microsoft.AspNetCore.Mvc;
 using WebSite.Models.ExternalResults;
 using WebSite.Services;
 
 namespace WebSite.Controllers
 {
-    [RoutePrefix("api/score")]
-    public class ExternalResultsApiController : ApiController
+    [Route("api/score")]
+    [ApiController]
+    public class ExternalResultsApiController(QueryService queryService) : ControllerBase
     {
-        private readonly QueryService queryService;
-
-        public ExternalResultsApiController()
-        {
-            queryService = new QueryService();
-        }
-
-        [Route("push-result"), HttpPost]
-        public async Task<IHttpActionResult> Push(QueryModel request)
+        [HttpPost("push-result")]
+        public async Task<IActionResult> Push([FromBody] QueryModel request)
         {
             return Ok(await queryService.PushScore(request));
         }
