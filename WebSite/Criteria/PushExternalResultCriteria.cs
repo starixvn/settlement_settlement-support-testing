@@ -1,8 +1,4 @@
 ﻿using Fanex.Data.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace WebSite.Criteria
 {
@@ -22,7 +18,7 @@ namespace WebSite.Criteria
 
         public override string GetSettingKey()
         {
-            return "NAP_Set_ProviderExternalResultDetailSportsIns_SIT";
+            return "NAP_Set_ExternalResult_Ins";
         }
 
         public override bool IsValid()
