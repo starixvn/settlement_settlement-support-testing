@@ -25,6 +25,11 @@ namespace WebSite.Controllers
         [HttpPost("ClearMarket")]
         public IActionResult ClearMarket([FromBody] Market market)
         {
+            // Ensure the market object has valid data
+            if (market == null || market.BetType == 0)
+            {
+                return BadRequest("Invalid market data");
+            }
             RequestMonitorService.ClearMarket(market);
             return Ok();
         }

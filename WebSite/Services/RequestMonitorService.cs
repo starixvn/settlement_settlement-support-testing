@@ -21,12 +21,22 @@ public static class RequestMonitorService
         var listMarket = markets.Replace("(", string.Empty).Replace(")", string.Empty).Split(',');
         foreach (var market in listMarket)
         {
-            var dashIndex = market.IndexOf('-');
-            _markets.Add(new Market
+            var trimmedMarket = market.Trim();
+            var dashIndex = trimmedMarket.IndexOf('-');
+            if (dashIndex > 0)
             {
-                BetType = int.Parse(market.Substring(0, dashIndex)),
-                GoalLine = decimal.Parse(market.Substring(dashIndex + 1))
-            });
+                var betTypeStr = trimmedMarket.Substring(0, dashIndex).Trim();
+                var goalLineStr = trimmedMarket.Substring(dashIndex + 1).Trim();
+                
+                if (int.TryParse(betTypeStr, out int betType) && decimal.TryParse(goalLineStr, out decimal goalLine))
+                {
+                    _markets.Add(new Market
+                    {
+                        BetType = betType,
+                        GoalLine = goalLine
+                    });
+                }
+            }
         }
     }
     public static void AddRequest(string requestData, string apiName)

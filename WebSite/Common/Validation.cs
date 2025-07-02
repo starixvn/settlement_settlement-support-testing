@@ -22,7 +22,7 @@ namespace WebSite.Common
                 }
             }
 
-            return new Result { ErrMsg = ErrorMessage.Success };
+            return new Result { ErrCode = 0, ErrMsg = ErrorMessage.Success };
         }
 
         private static bool InvalidParameter(QueryModel model)
@@ -64,7 +64,7 @@ namespace WebSite.Common
                 }
             }
 
-            return new Result();
+            return new Result { ErrCode = 0, ErrMsg = ErrorMessage.Success };
         }
     }
 }

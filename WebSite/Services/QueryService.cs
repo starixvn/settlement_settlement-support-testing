@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Fanex.Data.Repository;
+﻿using Fanex.Data.Repository;
 using Fanex.Settlement.Converter.Services;
 using WebSite.Criteria;
 using WebSite.Models;
@@ -33,53 +32,6 @@ public class QueryServiceImp(IDynamicRepository repository, XmlConvertService xm
             ResultDetails = data.Item1.ToList(),
             ExternalResultDetails = data.Item2.ToList()
         };
-    }
-
-    private string ResultDetail(List<ResultDetailModel> resultDetails)
-    {
-        var config = new MapperConfiguration(cfg =>
-        {
-            cfg.CreateMap<ResultDetailModel, ResourcesItem>();
-        });
-        var iMapper = config.CreateMapper();
-
-        var resourceItems = new List<ResourcesItem>();
-        foreach (var resultDetail in resultDetails)
-        {
-            var item = iMapper.Map<ResultDetailModel, ResourcesItem>(resultDetail);
-            resourceItems.Add(item);
-        }
-
-        var resources = new Models.Resources
-        {
-            ResourceItems = resourceItems
-        };
-
-        return xmlConvertService.Serialize(resources);
-    }
-
-    private string ExternalResultDetail(List<ExternalResultDetailModel> externalResultDetails)
-    {
-        var config = new MapperConfiguration(cfg =>
-        {
-            cfg.CreateMap<ExternalResultDetailModel, ExternalResourcesItem>();
-        });
-        var iMapper = config.CreateMapper();
-
-        var resourceItems = new List<ExternalResourcesItem>();
-        foreach (var resultDetail in externalResultDetails)
-        {
-            var item = iMapper.Map<ExternalResultDetailModel, ExternalResourcesItem>(resultDetail);
-
-            resourceItems.Add(item);
-        }
-
-        var resources = new ExternalResources
-        {
-            ResourceItems = resourceItems
-        };
-
-        return xmlConvertService.Serialize(resources);
     }
 
     public async Task<Result> PushScore(Models.ExternalResults.QueryModel request)

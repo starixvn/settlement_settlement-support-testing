@@ -1,18 +1,29 @@
+using Fanex.NAP.Client;
+using Fanex.NAP.Client.Attributes;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Serialization;
+using ONEbook.UM.DependencyInjection;
+using ONEbook.UM.Filters;
 using WebSite;
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+var configuration = builder.Configuration;
 
 // Add services to the container.
 
-builder.Services.AddControllersWithViews()
-    .AddRazorRuntimeCompilation()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.PropertyNamingPolicy = null;
-        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-    });
-builder.Services.AddRazorPages();
-builder.Services.AddCors(options =>
+services.AddSession();
+services.AddRazorPages();
+services.AddControllersWithViews(options =>
+{
+    options.Filters.Add(new ServiceFilterAttribute(typeof(CheckUMFilterAttribute)));
+    options.Filters.Add(new SessionAuthorizeAttribute());
+}).AddNewtonsoftJson(options =>
+{
+    options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver();
+});
+services.AddRazorPages();
+services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
         builder =>
@@ -23,10 +34,15 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader();
         });
 });
-builder.Services.AddHealthChecks();
+services.AddHealthChecks();
 
-builder.Services.AddConfigRedisCache(builder.Configuration);
-builder.Services.InitializeServices(builder.Configuration);
+// Add Session
+services.AddOneBookUmForWeb(configuration);
+services.AddDistributedMemoryCache();
+services.AddConfigRedisCache(configuration);
+services.InitializeServices(configuration);
+services.AddAuthentication(configuration);
+services.AddNapClient(configuration);
 
 var app = builder.Build();
 
@@ -39,14 +55,12 @@ app.UseRouting();
 
 app.UseCors("AllowAll");
 
+app.UseSession();
+app.UseAuthentication();
 app.UseAuthorization();
 
-// Redirect root to index.html
-app.MapGet("/", context =>
-{
-    context.Response.Redirect("/health");
-    return Task.CompletedTask;
-});
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",

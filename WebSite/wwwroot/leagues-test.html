@@ -1,459 +1,382 @@
 ﻿<!DOCTYPE html>
-
-<html>
+<html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title></title>
-    <script src="scripts/jquery-1.8.3.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settlement Support Testing - Leagues Test</title>
+          <script src="scripts/jquery-1.8.3.min.js"></script>
+      <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <form id="UpdateResult">
-        <fieldset>
-            <legend>Update League Test for 2 services(AutoInstant + AutoPayout):</legend>
-            <table cellpadding="2" cellspacing="2" border="0">
-                <tr>
-                    <td>- LeagueIds:</td>
-                    <td><input type="text" onkeypress='validate(event)' id="leagueIds" value="" /> Ex: 1234</td>
-                    <td width="70px"></td>
-                    <td>
-                        <span>LeagueIdExclude:</span>
-                        <span id="leagueIdExclude"></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <input type="button" id="Submit" value="Submit">
-                        <input type="button" id="ClearLeagueTest" value="Clear league test PRO">
-                    </td>
-                    <td></td>
-                    <td>
-                        <span>LeagueIdInclude:</span>
-                        <span id="leagueIdInclude"></span>
-                    </td>
-                </tr>
-            </table>
-        </fieldset>
-    </form>
-    <br>
-    <form id="UpdateResultOtherSport">
-        <fieldset>
-            <legend>Update League Test for service(AutoPayoutOtherSport):</legend>
-            <table cellpadding="2" cellspacing="2" border="0">
-                <tr>
-                    <td>- LeagueIds:</td>
-                    <td><input type="text" onkeypress='validateString(event)' id="leagueIdOtherSport" value="" /> Ex: 1234</td>
-                    <td width="70px"></td>
-                    <td>
-                        <span>LeagueIdExclude:</span>
-                        <span id="leagueIdOtherSportExclude"></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <input type="button" id="SubmitOtherSport" value="Submit">
-                        <input type="button" id="ClearLeagueOtherSportTest" value="Clear league test PRO">
-                    </td>
-                    <td></td>
-                    <td>
-                        <span>LeagueIdInclude:</span>
-                        <span id="leagueIdOtherSportInclude"></span>
-                    </td>
-                </tr>
-            </table>
-        </fieldset>
-    </form>
-    <br>
-    <form id="UpdateResultVirtualCricket">
-        <fieldset>
-            <legend>Update League Test for service(AutoPayoutVirtualCricket):</legend>
-            <table cellpadding="2" cellspacing="2" border="0">
-                <tr>
-                    <td>- LeagueIds:</td>
-                    <td><input type="text" onkeypress='validate(event)' id="leagueIdVirtualCricket" value="" /> Ex: 1234</td>
-                    <td width="70px"></td>
-                    <td>
-                        <span>LeagueIdExclude:</span>
-                        <span id="leagueIdVirtualCricketExclude"></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <input type="button" id="SubmitVirtualCricket" value="Submit">
-                        <input type="button" id="ClearLeagueVirtualCricketTest" value="Clear league test PRO">
-                    </td>
-                    <td></td>
-                    <td>
-                        <span>LeagueIdInclude:</span>
-                        <span id="leagueIdVirtualCricketInclude"></span>
-                    </td>
-                </tr>
-            </table>
-        </fieldset>
-    </form>
-    <br>
-    <form id="UpdateResultAnySport">
-        <fieldset>
-            <legend>Update League(s) Test for service(AnySport):</legend>
-            <table cellpadding="2" cellspacing="2" border="0">
-                <tr>
-                    <td>- LeagueIds:</td>
-                    <td><input type="text" id="leagueIdsAnySport" value="" /> Ex: 1234,4343</td>
-                    <td width="70px"></td>
-                    <td>
-                        <span>LeagueIdExclude:</span>
-                        <span id="leagueIdsAnySportExclude"></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <input type="button" id="SubmitAnySport" value="Submit">
-                        <input type="button" id="ClearLeagueAnySportTest" value="Clear league test PRO">
-                    </td>
-                    <td></td>
-                    <td>
-                        <span>LeagueIdInclude:</span>
-                        <span id="leagueIdsAnySportInclude"></span>
-                    </td>
-                </tr>
-            </table>
-        </fieldset>
-    </form>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Home</a>
+        
+        <h1>🏆 Leagues Test Management</h1>
+        
+        <div class="form-section">
+            <div class="league-section">
+                <h3>
+                    AutoInstant + AutoPayout
+                    <span class="service-badge">Core Services</span>
+                </h3>
+                <div class="input-group">
+                    <div class="form-group">
+                        <label for="leagueIds">League IDs:</label>
+                        <input type="text" id="leagueIds" class="form-control" 
+                               placeholder="Enter League ID (e.g., 1234)" 
+                               onkeypress="validate(event)" />
+                    </div>
+                    <button type="button" id="Submit" class="btn btn-success">
+                        📤 Submit
+                    </button>
+                    <button type="button" id="ClearLeagueTest" class="btn btn-danger">
+                        🗑️ Clear
+                    </button>
+                </div>
+                <div class="example-text">
+                    <strong>Example:</strong> 1234
+                </div>
+                <div class="league-info">
+                    <div>
+                        <span>LeagueId Exclude:</span>
+                        <span class="value" id="leagueIdExclude">-</span>
+                    </div>
+                    <div>
+                        <span>LeagueId Include:</span>
+                        <span class="value" id="leagueIdInclude">-</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="league-section">
+                <h3>
+                    AutoPayoutOtherSport
+                    <span class="service-badge other-sport">Other Sport</span>
+                </h3>
+                <div class="input-group">
+                    <div class="form-group">
+                        <label for="leagueIdOtherSport">League IDs:</label>
+                        <input type="text" id="leagueIdOtherSport" class="form-control" 
+                               placeholder="Enter League IDs (e.g., 1234,5678)" 
+                               onkeypress="validateString(event)" />
+                    </div>
+                    <button type="button" id="SubmitOtherSport" class="btn btn-success">
+                        📤 Submit
+                    </button>
+                    <button type="button" id="ClearLeagueOtherSportTest" class="btn btn-danger">
+                        🗑️ Clear
+                    </button>
+                </div>
+                <div class="example-text">
+                    <strong>Example:</strong> 1234,5678
+                </div>
+                <div class="league-info">
+                    <div>
+                        <span>LeagueId Exclude:</span>
+                        <span class="value" id="leagueIdOtherSportExclude">-</span>
+                    </div>
+                    <div>
+                        <span>LeagueId Include:</span>
+                        <span class="value" id="leagueIdOtherSportInclude">-</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="league-section">
+                <h3>
+                    AutoPayoutVirtualCricket
+                    <span class="service-badge virtual-cricket">Virtual Cricket</span>
+                </h3>
+                <div class="input-group">
+                    <div class="form-group">
+                        <label for="leagueIdVirtualCricket">League IDs:</label>
+                        <input type="text" id="leagueIdVirtualCricket" class="form-control" 
+                               placeholder="Enter League ID (e.g., 1234)" 
+                               onkeypress="validate(event)" />
+                    </div>
+                    <button type="button" id="SubmitVirtualCricket" class="btn btn-success">
+                        📤 Submit
+                    </button>
+                    <button type="button" id="ClearLeagueVirtualCricketTest" class="btn btn-danger">
+                        🗑️ Clear
+                    </button>
+                </div>
+                <div class="example-text">
+                    <strong>Example:</strong> 1234
+                </div>
+                <div class="league-info">
+                    <div>
+                        <span>LeagueId Exclude:</span>
+                        <span class="value" id="leagueIdVirtualCricketExclude">-</span>
+                    </div>
+                    <div>
+                        <span>LeagueId Include:</span>
+                        <span class="value" id="leagueIdVirtualCricketInclude">-</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="league-section">
+                <h3>
+                    AnySport
+                    <span class="service-badge any-sport">Any Sport</span>
+                </h3>
+                <div class="input-group">
+                    <div class="form-group">
+                        <label for="leagueIdsAnySport">League IDs:</label>
+                        <input type="text" id="leagueIdsAnySport" class="form-control" 
+                               placeholder="Enter League IDs (e.g., 1234,4343)" />
+                    </div>
+                    <button type="button" id="SubmitAnySport" class="btn btn-success">
+                        📤 Submit
+                    </button>
+                    <button type="button" id="ClearLeagueAnySportTest" class="btn btn-danger">
+                        🗑️ Clear
+                    </button>
+                </div>
+                <div class="example-text">
+                    <strong>Example:</strong> 1234,4343
+                </div>
+                <div class="league-info">
+                    <div>
+                        <span>LeagueId Exclude:</span>
+                        <span class="value" id="leagueIdsAnySportExclude">-</span>
+                    </div>
+                    <div>
+                        <span>LeagueId Include:</span>
+                        <span class="value" id="leagueIdsAnySportInclude">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Processing your request...</p>
+        </div>
+        
+        <div id="alert-container"></div>
+    </div>
+
+    <script type="text/javascript">
+        // Load settings on page load
+        $(document).ready(function() {
+            getSetting();
+        });
+
+        function showAlert(message, type = 'info') {
+            // Show native alert for immediate feedback
+            if (type === 'success') {
+                alert(message);
+            } else if (type === 'error') {
+                alert(message);
+            }
+            
+            // Also show custom alert
+            const alertContainer = $('#alert-container');
+            const alertClass = type === 'success' ? 'alert-success' : 
+                              type === 'error' ? 'alert-danger' : 'alert-info';
+            
+            alertContainer.html(`
+                <div class="alert ${alertClass}">
+                    ${message}
+                </div>
+            `);
+            
+            // Scroll to alert
+            $('html, body').animate({
+                scrollTop: alertContainer.offset().top - 100
+            }, 500);
+            
+            // Auto-hide after 8 seconds for success, 10 seconds for error
+            const hideTime = type === 'success' ? 8000 : 10000;
+            setTimeout(() => {
+                alertContainer.empty();
+            }, hideTime);
+        }
+
+        function showLoading(show = true) {
+            if (show) {
+                $('#loading').show();
+                $('button').prop('disabled', true);
+            } else {
+                $('#loading').hide();
+                $('button').prop('disabled', false);
+            }
+        }
+
+        function getSetting() {
+            showLoading(true);
+            
+            $.ajax({
+                type: "GET",
+                url: "api/league-test/get",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    $('#leagueIdExclude').html(result.leagueId || '-');
+                    $('#leagueIdInclude').html(result.leagueId || '-');
+                    $('#leagueIdOtherSportExclude').html(result.leagueIdOtherSport || '-');
+                    $('#leagueIdOtherSportInclude').html(result.leagueIdOtherSport || '-');
+                    $('#leagueIdVirtualCricketExclude').html(result.leagueIdVirtualCricket || '-');
+                    $('#leagueIdVirtualCricketInclude').html(result.leagueIdVirtualCricket || '-');
+                    $('#leagueIdsAnySportExclude').html(result.leagueIdsTest || '-');
+                    $('#leagueIdsAnySportInclude').html(result.leagueIdsTest || '-');
+                    showLoading(false);
+                },
+                error: function() {
+                    showAlert("❌ Error loading league settings", 'error');
+                    showLoading(false);
+                }
+            });
+        }
+
+        function clearLeagueTest(serviceName, endpoint) {
+            var con = confirm(`Are you sure you want to clear league test for ${serviceName} on production?`);
+            if (con) {
+                showLoading(true);
+                
+                var params = {
+                    LeagueIds: "",
+                    IsClear: true
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: endpoint,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    data: JSON.stringify(params),
+                    success: function (result) {
+                        showAlert(`✅ League test cleared successfully for ${serviceName}`, 'success');
+                        getSetting();
+                    },
+                    error: function () {
+                        showAlert(`❌ Error clearing league test for ${serviceName}`, 'error');
+                        showLoading(false);
+                    }
+                });
+            }
+        }
+
+        function submitLeagueTest(serviceName, endpoint, inputId, validationFunc) {
+            var leagueids = $(`#${inputId}`).val();
+
+            if (leagueids === "") {
+                showAlert(`❌ Please input league ID(s) for ${serviceName}`, 'error');
+                return;
+            }
+
+            if (validationFunc && !validationFunc(leagueids)) {
+                showAlert(`❌ Please input correct league ID(s) for ${serviceName}`, 'error');
+                return;
+            }
+
+            showLoading(true);
+
+            var params = {
+                LeagueIds: leagueids,
+                IsClear: false
+            };
+
+            $.ajax({
+                type: "POST",
+                url: endpoint,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify(params),
+                success: function (result) {
+                    showAlert(`✅ League test updated successfully for ${serviceName}`, 'success');
+                    getSetting();
+                },
+                error: function () {
+                    showAlert(`❌ Error updating league test for ${serviceName}`, 'error');
+                    showLoading(false);
+                }
+            });
+        }
+
+        // Event handlers
+        $('#ClearLeagueTest').click(function (e) {
+            clearLeagueTest("AutoInstant + AutoPayout", "api/league-test/update");
+        });
+
+        $('#ClearLeagueOtherSportTest').click(function (e) {
+            clearLeagueTest("AutoPayoutOtherSport", "api/league-test/update-other-sport");
+        });
+
+        $('#ClearLeagueVirtualCricketTest').click(function (e) {
+            clearLeagueTest("AutoPayoutVirtualCricket", "api/league-test/update-virtual-cricket");
+        });
+
+        $('#ClearLeagueAnySportTest').click(function (e) {
+            clearLeagueTest("AnySport", "api/league-test/update-any-sport");
+        });
+
+        $('#Submit').click(function (e) {
+            submitLeagueTest("AutoInstant + AutoPayout", "api/league-test/update", "leagueIds", null);
+        });
+
+        $('#SubmitOtherSport').click(function (e) {
+            submitLeagueTest("AutoPayoutOtherSport", "api/league-test/update-other-sport", "leagueIdOtherSport", function(value) {
+                return !value.split(',').some(x => !/^-?\d+$/.test(x.trim()));
+            });
+        });
+
+        $('#SubmitVirtualCricket').click(function (e) {
+            submitLeagueTest("AutoPayoutVirtualCricket", "api/league-test/update-virtual-cricket", "leagueIdVirtualCricket", null);
+        });
+
+        $('#SubmitAnySport').click(function (e) {
+            submitLeagueTest("AnySport", "api/league-test/update-any-sport", "leagueIdsAnySport", function(value) {
+                return !value.split(',').some(x => !/^-?\d+$/.test(x.trim()));
+            });
+        });
+
+        // Validation functions
+        function validate(evt) {
+            var theEvent = evt || window.event;
+
+            // Handle paste
+            if (theEvent.type === 'paste') {
+                key = event.clipboardData.getData('text/plain');
+            } else {
+                // Handle key press
+                var key = theEvent.keyCode || theEvent.which;
+                key = String.fromCharCode(key);
+            }
+            var regex = /[0-9]|\./;
+            if (!regex.test(key)) {
+                theEvent.returnValue = false;
+                if (theEvent.preventDefault) theEvent.preventDefault();
+            }
+        }
+
+        function validateString(evt) {
+            var theEvent = evt || window.event;
+
+            // Handle paste
+            if (theEvent.type === 'paste') {
+                key = event.clipboardData.getData('text/plain');
+            } else {
+                // Handle key press
+                var key = theEvent.keyCode || theEvent.which;
+                key = String.fromCharCode(key);
+            }
+            var regex = /[0-9]|\,/;
+            if (!regex.test(key)) {
+                theEvent.returnValue = false;
+                if (theEvent.preventDefault) theEvent.preventDefault();
+            }
+        }
+
+        // Add keyboard shortcuts
+        $(document).keydown(function(e) {
+            if (e.ctrlKey && e.key === 'r') { // Ctrl + R
+                e.preventDefault();
+                getSetting();
+            }
+        });
+    </script>
 </body>
 </html>
-
-<script type="text/javascript">
-    getSetting();
-    function getSetting() {
-        $.ajax({
-            type: "GET",
-            url: "api/league-test/get",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (result) {
-                $('#leagueIdExclude').html(result.leagueId)
-                $('#leagueIdInclude').html(result.leagueId)
-                $('#leagueIdOtherSportExclude').html(result.leagueIdOtherSport)
-                $('#leagueIdOtherSportInclude').html(result.leagueIdOtherSport)
-                $('#leagueIdVirtualCricketExclude').html(result.leagueIdVirtualCricket)
-                $('#leagueIdVirtualCricketInclude').html(result.leagueIdVirtualCricket)
-                $('#leagueIdsAnySportExclude').html(result.leagueIdsTest)
-                $('#leagueIdsAnySportInclude').html(result.leagueIdsTest)
-
-            }
-        });
-    }
-
-    $('#ClearLeagueTest').click(function (e) {
-        var con = confirm("Are you sure you want to clear league test on the production?")
-        if (con) {
-            var params = {
-                LeagueIds: "",
-                IsClear: true
-            };
-
-            $.ajax({
-                type: "POST",
-                url: "api/league-test/update",
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                data: JSON.stringify(params),
-                success: function (result) {
-                    location.reload();
-
-                },
-                error: function () {
-                    console.log("Error");
-                },
-                complete: function () {
-                    console.log("Complete");
-                }
-            });
-        }
-
-    });
-
-    $('#ClearLeagueOtherSportTest').click(function (e) {
-        var con = confirm("Are you sure you want to clear league test for other sport on the production?")
-        if (con) {
-            var params = {
-                LeagueIds: "",
-                IsClear: true
-            };
-
-            $.ajax({
-                type: "POST",
-                url: "api/league-test/update-other-sport",
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                data: JSON.stringify(params),
-                success: function (result) {
-                    location.reload();
-
-                },
-                error: function () {
-                    console.log("Error");
-                },
-                complete: function () {
-                    console.log("Complete");
-                }
-            });
-        }
-
-    });
-
-    $('#ClearLeagueVirtualCricketTest').click(function (e) {
-        var con = confirm("Are you sure you want to clear league test for Virtual Cricket on the production?")
-        if (con) {
-            var params = {
-                LeagueIds: "",
-                IsClear: true
-            };
-
-            $.ajax({
-                type: "POST",
-                url: "api/league-test/update-virtual-cricket",
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                data: JSON.stringify(params),
-                success: function (result) {
-                    location.reload();
-
-                },
-                error: function () {
-                    console.log("Error");
-                },
-                complete: function () {
-                    console.log("Complete");
-                }
-            });
-        }
-
-    });
-
-    $('#ClearLeagueAnySportTest').click(function (e) {
-        var con = confirm("Are you sure you want to clear league test for Any Sport on the production?")
-        if (con) {
-            var params = {
-                LeagueIds: "",
-                IsClear: true
-            };
-
-            $.ajax({
-                type: "POST",
-                url: "api/league-test/update-any-sport",
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                data: JSON.stringify(params),
-                success: function (result) {
-                    location.reload();
-
-                },
-                error: function () {
-                    console.log("Error");
-                },
-                complete: function () {
-                    console.log("Complete");
-                }
-            });
-        }
-
-    });
-
-    $('#Submit').click(function (e) {
-        var leagueids = $('#leagueIds').val();
-
-        if (leagueids === "") {
-            alert("Please input leagueId.");
-            return;
-        }
-
-        var params = {
-            LeagueIds: leagueids,
-            IsClear: false
-        };
-
-        $.ajax({
-            type: "POST",
-            url: "api/league-test/update",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            data: JSON.stringify(params),
-            success: function (result) {
-                location.reload();
-
-            },
-            error: function () {
-                console.log("Error");
-            },
-            complete: function () {
-                console.log("Complete");
-            }
-        });
-    });
-
-    $('#SubmitOtherSport').click(function (e) {
-        var leagueids = $('#leagueIdOtherSport').val();
-
-        if (leagueids === "") {
-            alert("Please input leagueId(s).");
-            return;
-        }
-
-        var isInValidValue = leagueids.split(',').some(x => !/^-?\d+$/.test(x));
-        if (isInValidValue) {
-            alert("Please input correct leagueId(s).");
-            return;
-        }
-
-        var params = {
-            LeagueIds: leagueids,
-            IsClear: false
-        };
-
-        $.ajax({
-            type: "POST",
-            url: "api/league-test/update-other-sport",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            data: JSON.stringify(params),
-            success: function (result) {
-                location.reload();
-
-            },
-            error: function () {
-                console.log("Error");
-            },
-            complete: function () {
-                console.log("Complete");
-            }
-        });
-    });
-
-    $('#SubmitVirtualCricket').click(function (e) {
-        var leagueids = $('#leagueIdVirtualCricket').val();
-
-        if (leagueids === "") {
-            alert("Please input leagueId.");
-            return;
-        }
-
-        var params = {
-            LeagueIds: leagueids,
-            IsClear: false
-        };
-
-        $.ajax({
-            type: "POST",
-            url: "api/league-test/update-virtual-cricket",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            data: JSON.stringify(params),
-            success: function (result) {
-                location.reload();
-
-            },
-            error: function () {
-                console.log("Error");
-            },
-            complete: function () {
-                console.log("Complete");
-            }
-        });
-    });
-
-    $('#SubmitAnySport').click(function (e) {
-        var leagueids = $('#leagueIdsAnySport').val();
-
-        if (leagueids === "") {
-            alert("Please input leagueId.");
-            return;
-        }
-
-        var isInValidValue = leagueids.split(',').some(x => !/^-?\d+$/.test(x));
-        if (isInValidValue) {
-            alert("Please input correct leagueId(s).");
-            return;
-        }
-
-        var params = {
-            LeagueIds: leagueids,
-            IsClear: false
-        };
-
-        $.ajax({
-            type: "POST",
-            url: "api/league-test/update-any-sport",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            data: JSON.stringify(params),
-            success: function (result) {
-                location.reload();
-
-            },
-            error: function () {
-                console.log("Error");
-            },
-            complete: function () {
-                console.log("Complete");
-            }
-        });
-    });
-
-    function validate(evt) {
-        var theEvent = evt || window.event;
-
-        // Handle paste
-        if (theEvent.type === 'paste') {
-            key = event.clipboardData.getData('text/plain');
-        } else {
-            // Handle key press
-            var key = theEvent.keyCode || theEvent.which;
-            key = String.fromCharCode(key);
-        }
-        var regex = /[0-9]|\./;
-        if (!regex.test(key)) {
-            theEvent.returnValue = false;
-            if (theEvent.preventDefault) theEvent.preventDefault();
-        }
-    }
-
-    function validateString(evt) {
-        var theEvent = evt || window.event;
-
-        // Handle paste
-        if (theEvent.type === 'paste') {
-            key = event.clipboardData.getData('text/plain');
-        } else {
-            // Handle key press
-            var key = theEvent.keyCode || theEvent.which;
-            key = String.fromCharCode(key);
-        }
-        var regex = /[0-9]|\,/;
-        if (!regex.test(key)) {
-            theEvent.returnValue = false;
-            if (theEvent.preventDefault) theEvent.preventDefault();
-        }
-    }
-
-    function validateLeague(evt) {
-        var theEvent = evt || window.event;
-
-        // Handle paste
-        if (theEvent.type === 'paste') {
-            key = event.clipboardData.getData('text/plain');
-        } else {
-            // Handle key press
-            var key = theEvent.keyCode || theEvent.which;
-            key = String.fromCharCode(key);
-        }
-        //var regex = /[0-9]|\,/;
-        //if (!regex.test(key)) {
-        //    theEvent.returnValue = false;
-        //    if (theEvent.preventDefault) theEvent.preventDefault();
-        //}
-    }
-</script>

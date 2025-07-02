@@ -1,0 +1,221 @@
+@{
+    ViewData["Title"] = "Settlement Support Testing - Normal Match Update";
+}
+
+<div class="container">
+    <a href="@Url.Action("Index", "Home")" class="back-link">← Back to Home</a>
+    
+    <h1>📊 Normal Match Update</h1>
+    
+    <div class="form-section">
+        <h2>Match Information</h2>
+        <form id="UpdateResult">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="MatchId">Match ID:</label>
+                    <input type="number" id="MatchId" class="form-control" placeholder="Enter Match ID" />
+                </div>
+                
+                <div class="form-group">
+                    <label for="SourceId">Source:</label>
+                    <select name="SourceId" id="SourceId" class="form-control">
+                        <option value="1">SBOBET</option>
+                        <option value="6">BetISN</option>
+                        <option value="8">SingBet</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="TypeId">Status:</label>
+                <select name="TypeId" id="TypeId" class="form-control">
+                    <option value="1">HALF_TIME_FINISH</option>
+                    <option value="2">FINISH</option>
+                </select>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="HomeValue">Home Value:</label>
+                    <input type="text" id="HomeValue" class="form-control" placeholder="Enter Home Value" />
+                </div>
+                
+                <div class="form-group">
+                    <label for="AwayValue">Away Value:</label>
+                    <input type="text" id="AwayValue" class="form-control" placeholder="Enter Away Value" />
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <button type="button" id="Submit" class="btn btn-success">
+                    📤 Submit Update
+                </button>
+                <button type="button" id="Clear" class="btn btn-secondary">
+                    🗑️ Clear Form
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Processing your request...</p>
+    </div>
+    
+    <div id="alert-container"></div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        var resultScore = [];
+        
+        $('#Submit').click(function (e) {
+            updateResult();
+        });
+        
+        $('#Clear').click(function (e) {
+            clearForm();
+        });
+
+        function showAlert(message, type = 'info') {
+            // Show native alert for immediate feedback
+            if (type === 'success') {
+                alert(message);
+            } else if (type === 'error') {
+                alert(message);
+            }
+            
+            // Also show custom alert
+            const alertContainer = $('#alert-container');
+            const alertClass = type === 'success' ? 'alert-success' : 
+                              type === 'error' ? 'alert-danger' : 'alert-info';
+            
+            alertContainer.html(`
+                <div class="alert ${alertClass}">
+                    ${message}
+                </div>
+            `);
+            
+            // Scroll to alert
+            $('html, body').animate({
+                scrollTop: alertContainer.offset().top - 100
+            }, 500);
+            
+            // Auto-hide after 8 seconds for success, 10 seconds for error
+            const hideTime = type === 'success' ? 8000 : 10000;
+            setTimeout(() => {
+                alertContainer.empty();
+            }, hideTime);
+        }
+
+        function showLoading(show = true) {
+            if (show) {
+                $('#loading').show();
+                $('#Submit').prop('disabled', true);
+            } else {
+                $('#loading').hide();
+                $('#Submit').prop('disabled', false);
+            }
+        }
+
+        function clearForm() {
+            $('#MatchId').val('');
+            $('#HomeValue').val('');
+            $('#AwayValue').val('');
+            $('#SourceId').val('1');
+            $('#TypeId').val('1');
+            $('#alert-container').empty();
+        }
+
+        function validationForm() {
+            if ($('#MatchId').val() === null || $('#MatchId').val() === "") {
+                showAlert("❌ Invalid Match ID. Please enter a valid Match ID.", 'error');
+                return false;
+            }
+            
+            if ($('#HomeValue').val() === "" || $('#AwayValue').val() === "") {
+                showAlert("❌ Please enter both Home Value and Away Value.", 'error');
+                return false;
+            }
+            
+            return true;
+        }
+
+        function getParam() {
+            return {
+                MatchId: parseInt($('#MatchId').val()),
+                ResultInfo: [setValueResultScore()],
+                SecurityToken: "3BEAED79-1305-4213-BF4D-3B10DF385BA4"
+            };
+        }
+
+        function setValueResultScore() {
+            return {
+                SourceId: parseInt($('#SourceId').val()),
+                TypeId: parseInt($('#TypeId').val()),
+                HomeValue: $('#HomeValue').val(),
+                AwayValue: $('#AwayValue').val()
+            };
+        }
+
+        function updateResult() {
+            if (!validationForm()) {
+                return;
+            }
+
+            showLoading(true);
+            var param = getParam();
+
+            $.ajax({
+                type: "POST",
+                url: "/api/match/single-match",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify(param),
+                success: function (result) {
+                    showLoading(false);
+                    
+                    // Check if response is valid
+                    if (!result || typeof result !== 'object') {
+                        showAlert(`❌ Error: Invalid response format from API`, 'error');
+                        return;
+                    }
+                    
+                    // Check if errCode is exactly 0 (success case)
+                    if (result.errCode === 0) {
+                        showAlert("✅ Success! Match result has been updated successfully.", 'success');
+                        clearForm();
+                    } else {
+                        showAlert(`❌ Error: ${result.errMsg || 'Unknown error occurred'} (Code: ${result.errCode || 'undefined'})`, 'error');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    showLoading(false);
+                    
+                    let errorMessage = `❌ Network Error: ${error} (Status: ${status})`;
+                    
+                    // Try to parse error response if it's JSON
+                    try {
+                        if (xhr.responseText) {
+                            const errorResponse = JSON.parse(xhr.responseText);
+                            if (errorResponse.errMsg) {
+                                errorMessage = `❌ Error: ${errorResponse.errMsg} (Code: ${errorResponse.errCode || xhr.status})`;
+                            }
+                        }
+                    } catch (e) {
+                        // Could not parse error response as JSON
+                    }
+                    
+                    showAlert(errorMessage, 'error');
+                }
+            });
+        }
+        
+        // Add keyboard shortcuts
+        $(document).keydown(function(e) {
+            if (e.ctrlKey && e.keyCode === 13) { // Ctrl + Enter
+                updateResult();
+            }
+        });
+    </script>
+} 

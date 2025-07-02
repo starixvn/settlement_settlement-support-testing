@@ -1,0 +1,218 @@
+@{
+    ViewData["Title"] = "Market Jack Time";
+}
+
+<div class="container">
+    <a href="@Url.Action("Index", "Home")" class="back-link">← Back to Home</a>
+    
+    <h1>➕ Market Jack Time Monitor</h1>
+    
+    <div class="market-input-section">
+        <h3>Add New Market</h3>
+        <div class="input-group">
+            <div class="form-group">
+                <label for="requestInput">Market Configuration:</label>
+                <input type="text" id="requestInput" class="form-control" 
+                       placeholder="BetType1-GoalLine1,BetType2-GoalLine2" />
+            </div>
+            <button onclick="addRequest()" class="btn btn-success">
+                ➕ Add Market
+            </button>
+            <button onclick="loadRequest()" class="refresh-btn">
+                🔄 Refresh
+            </button>
+        </div>
+        <div class="example-text">
+            <strong>Example:</strong> 1-1,7-0.5,8-(-0.5)
+        </div>
+    </div>
+    
+    <div class="form-section">
+        <h2>Active Markets</h2>
+        <ul id="requestList" class="market-list">
+            <!-- Markets will be loaded here -->
+        </ul>
+    </div>
+    
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Loading markets...</p>
+    </div>
+    
+    <div id="alert-container"></div>
+</div>
+
+@section Scripts {
+    <script>
+        // Load markets on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadRequest();
+        });
+
+        function showAlert(message, type = 'info') {
+            // Show native alert for immediate feedback
+            if (type === 'success') {
+                alert(message);
+            } else if (type === 'error') {
+                alert(message);
+            }
+            
+            // Also show custom alert
+            const alertContainer = document.getElementById('alert-container');
+            const alertClass = type === 'success' ? 'alert-success' : 
+                              type === 'error' ? 'alert-danger' : 'alert-info';
+            
+            alertContainer.innerHTML = `
+                <div class="alert ${alertClass}">
+                    ${message}
+                </div>
+            `;
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        function showLoading(show = true) {
+            const loading = document.getElementById('loading');
+            if (show) {
+                loading.style.display = 'block';
+            } else {
+                loading.style.display = 'none';
+            }
+        }
+
+        async function addRequest() {
+            var input = document.getElementById("requestInput").value;
+            if (input.trim() === "") {
+                showAlert("❌ Please input your markets!", 'error');
+                return;
+            }
+
+            // Validate input format
+            const marketPattern = /^\d+-\-?\d*\.?\d*(,\d+-\-?\d*\.?\d*)*$/;
+            if (!marketPattern.test(input)) {
+                showAlert("❌ Invalid format! Please use format: BetType-GoalLine (e.g., 1-1,7-0.5)", 'error');
+                return;
+            }
+
+            showLoading(true);
+
+            try {
+                let response = await fetch('/api/monitor/SendMarket', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ request: input })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                showAlert("✅ Market added successfully!", 'success');
+                document.getElementById("requestInput").value = "";
+                await loadRequest();
+            } catch (error) {
+                showAlert("❌ Error: Please contact IT", 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function loadRequest() {
+            showLoading(true);
+
+            try {
+                let response = await fetch('/api/monitor/GetMarkets');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                
+                let data = await response.json();
+                updateList(data);
+            } catch (error) {
+                showAlert("❌ Error loading markets: Please contact IT", 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function clearMarket(betType, goalLine) {
+            if (!confirm(`Are you sure you want to remove market BetType: ${betType}, GoalLine: ${goalLine}?`)) {
+                return;
+            }
+
+            showLoading(true);
+
+            try {
+                let response = await fetch('/api/monitor/ClearMarket', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ betType: betType, goalLine: goalLine })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                showAlert("✅ Market removed successfully!", 'success');
+                await loadRequest();
+            } catch (error) {
+                showAlert("❌ Error: Unable to remove market", 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function updateList(markets) {
+            var list = document.getElementById("requestList");
+            list.innerHTML = ""; // Clear old list
+
+            if (markets.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📊</div>
+                        <h3>No Active Markets</h3>
+                        <p>Add a market above to get started</p>
+                    </div>
+                `;
+                return;
+            }
+
+            markets.forEach(market => {
+                let li = document.createElement("li");
+                li.className = "market-item";
+                
+                li.innerHTML = `
+                    <div class="market-info">
+                        <div class="market-bet-type">BetType: ${market.betType}</div>
+                        <div class="market-goal-line">GoalLine: ${market.goalLine}</div>
+                    </div>
+                    <div class="market-actions">
+                        <button onclick="clearMarket(${market.betType}, ${market.goalLine})" 
+                                class="btn btn-danger btn-sm">
+                            🗑️ Remove
+                        </button>
+                    </div>
+                `;
+                
+                list.appendChild(li);
+            });
+        }
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') { // Ctrl + Enter
+                addRequest();
+            }
+            if (e.key === 'F5') { // F5 to refresh
+                e.preventDefault();
+                loadRequest();
+            }
+        });
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadRequest, 30000);
+    </script>
+} 

@@ -5,6 +5,10 @@ using Fanex.Data.Repository;
 using Fanex.Logging;
 using Fanex.Logging.Sentry.RavenClient;
 using Fanex.Settlement.Converter.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Newtonsoft.Json;
 using WebSite.Services;
 using ILogger = Fanex.Logging.ILogger;
 
@@ -29,6 +33,23 @@ public static class InitializeInjector
         service.AddConfigRedisCache(configuration);
     }
 
+    public static void AddControllerAuthorization(this IServiceCollection services)
+    {
+        services.AddControllers(config =>
+        {
+            var policy = new AuthorizationPolicyBuilder()
+                             .RequireAuthenticatedUser()
+                             .Build();
+            config.Filters.Add(new AuthorizeFilter(policy));
+        });
+        services.AddControllersWithViews()
+            .AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            }
+        );
+    }
+
     public static void AddConfigRedisCache(this IServiceCollection services, IConfiguration configuration)
     {
         var connectionString = configuration.GetValue<string>("Redis:ConnectionString");
@@ -40,5 +61,26 @@ public static class InitializeInjector
             ApplicationName = applicationName,
         }));
         services.AddSingleton<ICacheService>(new CacheService());
+    }
+
+    public static void AddAuthentication(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                    .AddCookie(options =>
+                    {
+                        options.LoginPath = configuration.GetSection("AuthSettings:LoginPath").Value;
+                        options.LogoutPath = configuration.GetSection("AuthSettings:LogoutPath").Value;
+                        options.ExpireTimeSpan = TimeSpan.FromMinutes(int.Parse(configuration.GetSection("AuthSettings:CookieTimeOut").Value));
+                        options.Cookie = new CookieBuilder
+                        {
+                            Name = "Fanex.Settlement-Support-Testing.Cookie",
+                            SecurePolicy = CookieSecurePolicy.SameAsRequest
+                        };
+                        options.Events.OnSigningOut = context =>
+                        {
+                            context.Response.Redirect(options.LoginPath);
+                            return Task.CompletedTask;
+                        };
+                    });
     }
 }

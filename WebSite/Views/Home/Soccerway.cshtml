@@ -1,0 +1,261 @@
+@{
+    ViewData["Title"] = "Settlement Support Testing - Soccerway Results";
+}
+
+<div class="container">
+    <a href="@Url.Action("Index", "Home")" class="back-link">← Back to Home</a>
+    
+    <h1>⚽ Soccerway Results</h1>
+    
+    <div class="form-section">
+        <h2>Match Information</h2>
+        <form id="UpdateResult">
+            <div class="form-group">
+                <label for="MatchId">Match ID:</label>
+                <input type="number" id="MatchId" class="form-control" placeholder="Enter Match ID" />
+            </div>
+            
+            <div class="form-group">
+                <button type="button" class="add-goal-btn" onclick="AddGoal();">
+                    ➕ Add Goal
+                </button>
+            </div>
+            
+            <div id="block" class="goal-block">
+                <h3>Goal #1</h3>
+                <button type="button" class="remove-goal" onclick="removeGoal(this)">×</button>
+                
+                <div class="form-group">
+                    <label for="GoalId[]">Goal Time (minutes):</label>
+                    <input type="number" name="GoalId[]" id="GoalId[]" class="form-control" placeholder="Enter goal time" min="1" max="120" />
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" name="IsHome[]" id="IsHome[]" />
+                    <label for="IsHome[]">Is Home Team Goal</label>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="HomeValue[]">Home Value:</label>
+                        <input type="text" name="HomeValue[]" id="HomeValue[]" class="form-control" placeholder="Enter Home Value" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="AwayValue[]">Away Value:</label>
+                        <input type="text" name="AwayValue[]" id="AwayValue[]" class="form-control" placeholder="Enter Away Value" />
+                    </div>
+                </div>
+            </div>
+            
+            <div id="cloneBlock"></div>
+            
+            <div class="form-group">
+                <button type="button" id="Submit" class="btn btn-success">
+                    📤 Submit Results
+                </button>
+                <button type="button" id="Clear" class="btn btn-secondary">
+                    🗑️ Clear Form
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Processing your request...</p>
+    </div>
+    
+    <div id="alert-container"></div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        var goalCounter = 1;
+
+        $('#Submit').click(function (e) {
+            updateResult();
+        });
+        
+        $('#Clear').click(function (e) {
+            clearForm();
+        });
+
+        function showAlert(message, type = 'info') {
+            // Show native alert for immediate feedback
+            if (type === 'success') {
+                alert(message);
+            } else if (type === 'error') {
+                alert(message);
+            }
+            
+            // Also show custom alert
+            const alertContainer = $('#alert-container');
+            const alertClass = type === 'success' ? 'alert-success' : 
+                              type === 'error' ? 'alert-danger' : 'alert-info';
+            
+            alertContainer.html(`
+                <div class="alert ${alertClass}">
+                    ${message}
+                </div>
+            `);
+            
+            // Scroll to alert
+            $('html, body').animate({
+                scrollTop: alertContainer.offset().top - 100
+            }, 500);
+            
+            // Auto-hide after 8 seconds for success, 10 seconds for error
+            const hideTime = type === 'success' ? 8000 : 10000;
+            setTimeout(() => {
+                alertContainer.empty();
+            }, hideTime);
+        }
+
+        function showLoading(show = true) {
+            if (show) {
+                $('#loading').show();
+                $('#Submit').prop('disabled', true);
+            } else {
+                $('#loading').hide();
+                $('#Submit').prop('disabled', false);
+            }
+        }
+
+        function clearForm() {
+            $('#MatchId').val('');
+            $('#cloneBlock').empty();
+            $('#alert-container').empty();
+            goalCounter = 1;
+            
+            // Reset the first goal block
+            $('#GoalId\\[\\]').val('');
+            $('#IsHome\\[\\]').prop('checked', false);
+            $('#HomeValue\\[\\]').val('');
+            $('#AwayValue\\[\\]').val('');
+        }
+
+        function validationForm() {
+            if ($('#MatchId').val() === null || $('#MatchId').val() === "") {
+                showAlert("❌ Invalid Match ID. Please enter a valid Match ID.", 'error');
+                return false;
+            }
+            
+            // Check if at least one goal has data
+            var hasGoalData = false;
+            $("input[name^='GoalId']").each(function() {
+                if ($(this).val() !== "") {
+                    hasGoalData = true;
+                    return false; // break the loop
+                }
+            });
+            
+            if (!hasGoalData) {
+                showAlert("❌ Please add at least one goal with goal time.", 'error');
+                return false;
+            }
+            
+            return true;
+        }
+
+        function AddGoal() {
+            goalCounter++;
+            var copy = $("#block").clone();
+            copy.attr('id', 'goal-block-' + goalCounter);
+            copy.find('h3').text('Goal #' + goalCounter);
+            copy.find('input[name^="GoalId"]').val('');
+            copy.find('input[name^="IsHome"]').prop('checked', false);
+            copy.find('input[name^="HomeValue"]').val('');
+            copy.find('input[name^="AwayValue"]').val('');
+            copy.find('.remove-goal').show();
+            $("#cloneBlock").append(copy);
+        }
+
+        function removeGoal(button) {
+            $(button).closest('.goal-block').remove();
+            // Renumber remaining goals
+            $('.goal-block').each(function(index) {
+                $(this).find('h3').text('Goal #' + (index + 1));
+            });
+        }
+
+        function getParam() {
+            var score = [];
+            var n = $("input[name^='GoalId']").length;
+            for (i = 0; i < n; i++) {
+                goalTime = $("input[name^='GoalId']").eq(i).val();
+                isHome = $("input[name^='IsHome']").eq(i).is(':checked');
+                homeValue = $("input[name^='HomeValue']").eq(i).val();
+                awayValue = $("input[name^='AwayValue']").eq(i).val();
+
+                if (goalTime !== "") {
+                    score.push({
+                        GoalTime: parseInt(goalTime),
+                        IsHome: isHome,
+                        HomeValue: homeValue,
+                        AwayValue: awayValue
+                    });
+                }
+            }
+
+            return {
+                MatchId: parseInt($('#MatchId').val()),
+                ResultInfo: score,
+                SecurityToken: "3BEAED79-1305-4213-BF4D-3B10DF385BA4"
+            };
+        }
+
+        function updateResult() {
+            if (!validationForm()) {
+                return;
+            }
+
+            showLoading(true);
+            var param = getParam();
+
+            $.ajax({
+                type: "POST",
+                url: "/api/match/soccerway-result",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify(param),
+                success: function (result) {
+                    showLoading(false);
+                    
+                    if (result.errCode === 0) {
+                        showAlert("✅ Success! Soccerway results have been updated successfully.", 'success');
+                        clearForm();
+                    } else {
+                        showAlert(`❌ Error: ${result.errMsg || 'Unknown error occurred'} (Code: ${result.errCode})`, 'error');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    showLoading(false);
+                    
+                    let errorMessage = `❌ Network Error: ${error} (Status: ${status})`;
+                    
+                    // Try to parse error response if it's JSON
+                    try {
+                        if (xhr.responseText) {
+                            const errorResponse = JSON.parse(xhr.responseText);
+                            if (errorResponse.errMsg) {
+                                errorMessage = `❌ Error: ${errorResponse.errMsg} (Code: ${errorResponse.errCode || xhr.status})`;
+                            }
+                        }
+                    } catch (e) {
+                        // Could not parse error response as JSON
+                    }
+                    
+                    showAlert(errorMessage, 'error');
+                }
+            });
+        }
+        
+        // Add keyboard shortcuts
+        $(document).keydown(function(e) {
+            if (e.ctrlKey && e.keyCode === 13) { // Ctrl + Enter
+                updateResult();
+            }
+        });
+    </script>
+} 

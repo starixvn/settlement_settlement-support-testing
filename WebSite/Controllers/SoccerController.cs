@@ -15,20 +15,6 @@ public class SoccerController(SoccerResultService soccerResultService) : Control
         return Content("OK");
     }
 
-    [HttpPost("goal-record")]
-    public IActionResult GoalRecord([FromBody] QueryModel model)
-    {
-        var valid = Validation.ValidResult(model);
-
-        if (valid.ErrCode > 0)
-        {
-            return Ok(valid);
-        }
-
-        var result = soccerResultService.Insert(model);
-        return Ok(result);
-    }
-
     [HttpPost("single-match")]
     public IActionResult SingleMatch([FromBody] QueryModel model)
     {
@@ -41,6 +27,27 @@ public class SoccerController(SoccerResultService soccerResultService) : Control
         else
         {
             var result = soccerResultService.InsertSingleMatch(model);
+            return Ok(result);
+        }
+    }
+
+    [HttpPost("soccerway-result")]
+    public IActionResult SoccerwayResult([FromBody] QueryModel model)
+    {
+        if (model == null)
+        {
+            return BadRequest(new { errCode = 400, errMsg = "Request body is null" });
+        }
+
+        var valid = Validation.ValidResult(model);
+
+        if (valid.ErrCode > 0)
+        {
+            return Ok(valid);
+        }
+        else
+        {
+            var result = soccerResultService.Insert(model);
             return Ok(result);
         }
     }
