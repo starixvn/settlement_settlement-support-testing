@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Cors;
 
 namespace WebSite.Controllers
 {
-    [EnableCors("AllowAll")]
     [Route("api/cash-out")]
     [ApiController]
     public class CashOutApiController : ControllerBase

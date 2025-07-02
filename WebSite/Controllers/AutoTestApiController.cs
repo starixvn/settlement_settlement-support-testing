@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using WebSite.Models;
 using WebSite.Services;
 
 namespace WebSite.Controllers
 {
-    [EnableCors("AllowAll")]
     [Route("api/auto-test")]
     [ApiController]
     public class AutoTestApiController(QueryService queryService) : ControllerBase
