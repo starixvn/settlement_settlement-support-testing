@@ -23,6 +23,7 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader();
         });
 });
+builder.Services.AddHealthChecks();
 
 builder.Services.AddConfigRedisCache(builder.Configuration);
 builder.Services.InitializeServices(builder.Configuration);
@@ -30,7 +31,7 @@ builder.Services.InitializeServices(builder.Configuration);
 var app = builder.Build();
 
 app.UseDeveloperExceptionPage();
-
+app.MapHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -39,6 +40,13 @@ app.UseRouting();
 app.UseCors("AllowAll");
 
 app.UseAuthorization();
+
+// Redirect root to index.html
+app.MapGet("/", context =>
+{
+    context.Response.Redirect("/health");
+    return Task.CompletedTask;
+});
 
 app.MapControllerRoute(
     name: "default",

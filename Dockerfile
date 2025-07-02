@@ -1,12 +1,13 @@
 FROM hub.nexdev.net/base/dotnet/core/sdk:9.0-alpine AS builder
 
-COPY ./WebSite/WebSite.csproj ./WebSite/
+COPY ./WebSite/WebSite.csproj ./WebSite/WebSite.csproj
 
+WORKDIR ./WebSite
 RUN dotnet nuget add source https://nuget.nexdev.net/api/v2
 RUN --mount=type=cache,target=/root/.nuget/packages \
-	dotnet restore -v n -r linux-x64  WebSite/WebSites.csproj 
+	dotnet restore -v n
 
-COPY ./WebSite/. ./WebSite
+COPY ./WebSite .
 
 RUN dotnet publish -r linux-x64 --self-contained false -c Release -o /app
 
