@@ -3,6 +3,7 @@ using Fanex.NAP.Client.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using ONEbook.UM.DependencyInjection;
 using ONEbook.UM.Filters;
+//using Scalar.AspNetCore;
 using WebSite;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,7 @@ var services = builder.Services;
 var configuration = builder.Configuration;
 
 // Add services to the container.
-
+//services.AddOpenApi();
 services.AddSession();
 services.AddRazorPages();
 services.AddControllersWithViews(options =>
@@ -24,7 +25,7 @@ services.AddControllersWithViews(options =>
 services.AddRazorPages();
 services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
+    options.AddDefaultPolicy(
         builder =>
         {
             builder
@@ -52,7 +53,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseCors("AllowAll");
+app.UseCors();
 
 app.UseSession();
 app.UseAuthentication();
@@ -60,6 +61,12 @@ app.UseAuthorization();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+//if (app.Environment.IsDevelopment())
+//{
+//    app.MapOpenApi();
+//    app.MapScalarApiReference();
+//}
 
 app.MapControllerRoute(
     name: "default",
