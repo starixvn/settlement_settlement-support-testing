@@ -1,7 +1,6 @@
 using Fanex.NAP.Client;
 using Fanex.NAP.Client.Attributes;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Serialization;
 using ONEbook.UM.DependencyInjection;
 using ONEbook.UM.Filters;
 using WebSite;
@@ -47,7 +46,7 @@ services.AddNapClient(configuration);
 var app = builder.Build();
 
 app.UseDeveloperExceptionPage();
-app.MapHealthChecks("/health");
+app.MapHealthChecks("/healthz");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

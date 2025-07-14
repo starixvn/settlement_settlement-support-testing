@@ -108,22 +108,29 @@
         });
 
         function showAlert(message, type = 'info') {
-            // Show custom alert only
+            // Show native alert for immediate feedback
+            if (type === 'success') {
+                alert(message);
+            } else if (type === 'error') {
+                alert(message);
+            }
+
+            // Also show custom alert
             const alertContainer = $('#alert-container');
-            const alertClass = type === 'success' ? 'alert-success' : 
+            const alertClass = type === 'success' ? 'alert-success' :
                               type === 'error' ? 'alert-danger' : 'alert-info';
-            
+
             alertContainer.html(`
                 <div class="alert ${alertClass}">
                     ${message}
                 </div>
             `);
-            
+
             // Scroll to alert
             $('html, body').animate({
                 scrollTop: alertContainer.offset().top - 100
             }, 500);
-            
+
             // Auto-hide after 8 seconds for success, 10 seconds for error
             const hideTime = type === 'success' ? 8000 : 10000;
             setTimeout(() => {
@@ -238,7 +245,7 @@
                         showAlert("✅ Pushed results successfully", 'success');
                         clearForm();
                     } else {
-                        showAlert(`❌ Error: ${result.errMsg || 'Unknown error'}`, 'error');
+                         showAlert(`❌ Error: ${result.errMsg || 'Unknown error'}`, 'error');
                     }
                 },
                 error: function (xhr, status, error) {
