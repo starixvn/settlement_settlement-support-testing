@@ -1,9 +1,10 @@
 using Fanex.NAP.Client;
 using Fanex.NAP.Client.Attributes;
+using Fanex.RemotingRef;
 using Microsoft.AspNetCore.Mvc;
 using ONEbook.UM.DependencyInjection;
 using ONEbook.UM.Filters;
-//using Scalar.AspNetCore;
+using Scalar.AspNetCore;
 using WebSite;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +12,7 @@ var services = builder.Services;
 var configuration = builder.Configuration;
 
 // Add services to the container.
-//services.AddOpenApi();
+services.AddOpenApi();
 services.AddSession();
 services.AddRazorPages();
 services.AddControllersWithViews(options =>
@@ -44,6 +45,14 @@ services.InitializeServices(configuration);
 services.AddAuthentication(configuration);
 services.AddNapClient(configuration);
 
+RefDataTypeContainer
+           .ConnectTo(new Uri(configuration.GetSection("Fanex.RemotingRef.Service.Url").Value))
+           .FromApplication("Settlement");
+services.Configure<IConfiguration>(configuration);
+services.AddSingleton<IRemotingRefService, RemotingRefService>();
+
+
+
 var app = builder.Build();
 
 app.UseDeveloperExceptionPage();
@@ -62,11 +71,11 @@ app.UseAuthorization();
 app.UseAuthentication();
 app.UseAuthorization();
 
-//if (app.Environment.IsDevelopment())
-//{
-//    app.MapOpenApi();
-//    app.MapScalarApiReference();
-//}
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.MapScalarApiReference();
+}
 
 app.MapControllerRoute(
     name: "default",

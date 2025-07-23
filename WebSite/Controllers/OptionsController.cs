@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Fanex.RemotingRef;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebSite.Controllers;
@@ -6,7 +7,7 @@ namespace WebSite.Controllers;
 [AllowAnonymous]
 [Route("api/[controller]")]
 [ApiController]
-public class OptionsController : ControllerBase
+public class OptionsController(IRemotingRefService remotingRefService) : ControllerBase
 {
     private const int FourPosition = 4;
 
@@ -15,16 +16,38 @@ public class OptionsController : ControllerBase
     {
         // Simulate fetching options from a service or database
         var resourceArray = resources.Split(',').ToList();
+        var control = sportType switch
+        {
+            43 => EsResultControlDictionary.BetTypeToControlGroup,
+            6 => VoleyballResultControlDictionary.BetTypeToControlGroup,
+            _ => throw new ArgumentException("Invalid sport type")
+        };
+
+        var defaultControlGroup = sportType switch
+        {
+            43 => EsResultControlGroup.HomeAwayNone,
+            6 => VoleyballResultControlGroup.CoupleScores,
+            _ => throw new ArgumentException("Invalid sport type")
+        };
+
+        var controlGroupOptions = sportType switch
+        {
+            43 => EsResultControlDictionary.ControlGroupToOptions,
+            6 => VoleyballResultControlDictionary.VoleyballControlGroupToOptions,
+            _ => throw new ArgumentException("Invalid sport type")
+        };
 
         var result = resourceArray.Select((r, index) =>
         {
             var betType = r.Trim()[..FourPosition];
-            var controlGroupId = ResultControlDictionary.BetTypeToControlGroup.GetValueOrDefault(betType, ResultControlGroup.HomeAwayNone);
-            var options = ResultControlDictionary.ControlGroupToOptions.GetValueOrDefault(controlGroupId, []);
+            var controlGroupId = control.GetValueOrDefault(betType, defaultControlGroup);
+            var options = controlGroupOptions.GetValueOrDefault(controlGroupId, []);
             return new
             {
                 ResourceId = r,
+                SportType = sportType,
                 BetType = betType,
+                betTypeName = remotingRefService.GetBetTypeName(betType, r[FourPosition..]),
                 Options = options
             };
         });
@@ -35,7 +58,7 @@ public class OptionsController : ControllerBase
 
 public record Option(string Value, string Text);
 
-public static class ResultControl
+public static class EsResultControl
 {
     public static readonly string[] HomeAway = { "9067", "9068", "9072" };
     public static readonly string[] HomeAwayDraw = { "9063", "9064" };
@@ -59,7 +82,18 @@ public static class ResultControl
     public static readonly string[] YesNoNone = { "9133" };
 }
 
-public static class ResultControlGroup
+public static class VoleyballResultControl
+{
+    public static readonly string[] HomeAway = { "3901" };
+
+    public static readonly string[] HomeAwayNone = { "3909" };
+    public static readonly string[] YesNo = { "3914" };
+    public static readonly string[] CoupleScores = {
+        "3903", "3915"
+    };
+}
+
+public static class EsResultControlGroup
 {
     public const int HomeAwayNone = 0;
     public const int HomeAway = 1;
@@ -77,105 +111,161 @@ public static class ResultControlGroup
     public const int YesNoNone = 13;
 }
 
-public static class ResultControlDictionary
+public static class VoleyballResultControlGroup
+{
+    public const int HomeAwayNone = 0;
+    public const int HomeAway = 2;
+    public const int YesNo = 3;
+    public const int CoupleScores = 4;
+}
+
+public static class EsResultControlDictionary
 {
     // Add this mapping dictionary to convert betType to ResultControlGroup
     public static readonly Dictionary<string, int> BetTypeToControlGroup = new Dictionary<string, int>
     {
         // HomeAway
-        { "9067", ResultControlGroup.HomeAway },
-        { "9068", ResultControlGroup.HomeAway },
-        { "9072", ResultControlGroup.HomeAway },
+        { "9067", EsResultControlGroup.HomeAway },
+        { "9068", EsResultControlGroup.HomeAway },
+        { "9072", EsResultControlGroup.HomeAway },
         
         // HomeAwayDraw
-        { "9063", ResultControlGroup.HomeAwayDraw },
-        { "9064", ResultControlGroup.HomeAwayDraw },
+        { "9063", EsResultControlGroup.HomeAwayDraw },
+        { "9064", EsResultControlGroup.HomeAwayDraw },
         
         // YesNo
-        { "9073", ResultControlGroup.YesNo },
-        { "9075", ResultControlGroup.YesNo },
-        { "9087", ResultControlGroup.YesNo },
-        { "9124", ResultControlGroup.YesNo },
-        { "9132", ResultControlGroup.YesNo },
+        { "9073", EsResultControlGroup.YesNo },
+        { "9075", EsResultControlGroup.YesNo },
+        { "9087", EsResultControlGroup.YesNo },
+        { "9124", EsResultControlGroup.YesNo },
+        { "9132", EsResultControlGroup.YesNo },
         
         // CoupleScores
-        { "9002", ResultControlGroup.CoupleScores },
-        { "9008", ResultControlGroup.CoupleScores },
-        { "9012", ResultControlGroup.CoupleScores },
-        { "9018", ResultControlGroup.CoupleScores },
-        { "9024", ResultControlGroup.CoupleScores },
-        { "9028", ResultControlGroup.CoupleScores },
-        { "9034", ResultControlGroup.CoupleScores },
-        { "9040", ResultControlGroup.CoupleScores },
-        { "9046", ResultControlGroup.CoupleScores },
-        { "9052", ResultControlGroup.CoupleScores },
-        { "9059", ResultControlGroup.CoupleScores },
-        { "9074", ResultControlGroup.CoupleScores },
-        { "9065", ResultControlGroup.CoupleScores },
-        { "9066", ResultControlGroup.CoupleScores },
-        { "9069", ResultControlGroup.CoupleScores },
-        { "9091", ResultControlGroup.CoupleScores },
-        { "9093", ResultControlGroup.CoupleScores },
-        { "9115", ResultControlGroup.CoupleScores },
-        { "9139", ResultControlGroup.CoupleScores },
-        { "9140", ResultControlGroup.CoupleScores },
+        { "9002", EsResultControlGroup.CoupleScores },
+        { "9008", EsResultControlGroup.CoupleScores },
+        { "9012", EsResultControlGroup.CoupleScores },
+        { "9018", EsResultControlGroup.CoupleScores },
+        { "9024", EsResultControlGroup.CoupleScores },
+        { "9028", EsResultControlGroup.CoupleScores },
+        { "9034", EsResultControlGroup.CoupleScores },
+        { "9040", EsResultControlGroup.CoupleScores },
+        { "9046", EsResultControlGroup.CoupleScores },
+        { "9052", EsResultControlGroup.CoupleScores },
+        { "9059", EsResultControlGroup.CoupleScores },
+        { "9074", EsResultControlGroup.CoupleScores },
+        { "9065", EsResultControlGroup.CoupleScores },
+        { "9066", EsResultControlGroup.CoupleScores },
+        { "9069", EsResultControlGroup.CoupleScores },
+        { "9091", EsResultControlGroup.CoupleScores },
+        { "9093", EsResultControlGroup.CoupleScores },
+        { "9115", EsResultControlGroup.CoupleScores },
+        { "9139", EsResultControlGroup.CoupleScores },
+        { "9140", EsResultControlGroup.CoupleScores },
         
         // Duration
-        { "9058", ResultControlGroup.Duration },
-        { "9089", ResultControlGroup.Duration },
-        { "9090", ResultControlGroup.Duration },
-        { "9121", ResultControlGroup.Duration },
-        { "9123", ResultControlGroup.Duration },
-        { "9126", ResultControlGroup.Duration },
-        { "9129", ResultControlGroup.Duration },
-        { "9131", ResultControlGroup.Duration },
-        { "9134", ResultControlGroup.Duration },
-        { "9136", ResultControlGroup.Duration },
-        { "9137", ResultControlGroup.Duration },
-        { "9127", ResultControlGroup.Duration },
+        { "9058", EsResultControlGroup.Duration },
+        { "9089", EsResultControlGroup.Duration },
+        { "9090", EsResultControlGroup.Duration },
+        { "9121", EsResultControlGroup.Duration },
+        { "9123", EsResultControlGroup.Duration },
+        { "9126", EsResultControlGroup.Duration },
+        { "9129", EsResultControlGroup.Duration },
+        { "9131", EsResultControlGroup.Duration },
+        { "9134", EsResultControlGroup.Duration },
+        { "9136", EsResultControlGroup.Duration },
+        { "9137", EsResultControlGroup.Duration },
+        { "9127", EsResultControlGroup.Duration },
         
         // MidNotMid
-        { "9130", ResultControlGroup.MidNotMid },
-        { "9138", ResultControlGroup.MidNotMid },
+        { "9130", EsResultControlGroup.MidNotMid },
+        { "9138", EsResultControlGroup.MidNotMid },
         
         // SingleScore
-        { "9128", ResultControlGroup.SingleScore },
+        { "9128", EsResultControlGroup.SingleScore },
         
         // TopBottomNone
-        { "9113", ResultControlGroup.TopBottomNone },
+        { "9113", EsResultControlGroup.TopBottomNone },
         
         // TopNotTop
-        { "9135", ResultControlGroup.TopNotTop },
+        { "9135", EsResultControlGroup.TopNotTop },
         
         // BottomNotBottom
-        { "9114", ResultControlGroup.BottomNotBottom },
+        { "9114", EsResultControlGroup.BottomNotBottom },
         
         // OverlordTyrant
-        { "9141", ResultControlGroup.OverlordTyrant },
+        { "9141", EsResultControlGroup.OverlordTyrant },
         
         // TyrantNotTyrant
-        { "9142", ResultControlGroup.TyrantNotTyrant },
+        { "9142", EsResultControlGroup.TyrantNotTyrant },
         
         // YesNoNone
-        { "9133", ResultControlGroup.YesNoNone }
+        { "9133", EsResultControlGroup.YesNoNone }
     };
 
     public static readonly Dictionary<int, List<Option>> ControlGroupToOptions = new Dictionary<int, List<Option>>
     {
-         { ResultControlGroup.HomeAwayNone, ResultOptions.HomeAwayNoneOptions},
-        { ResultControlGroup.HomeAway, ResultOptions.HomeAwayOptions },
-        { ResultControlGroup.HomeAwayDraw, ResultOptions.HomeAwayDrawOptions },
-        { ResultControlGroup.YesNo, ResultOptions.YesNoOptions },
+        { EsResultControlGroup.HomeAwayNone, ResultOptions.HomeAwayNoneOptions},
+        { EsResultControlGroup.HomeAway, ResultOptions.HomeAwayOptions },
+        { EsResultControlGroup.HomeAwayDraw, ResultOptions.HomeAwayDrawOptions },
+        { EsResultControlGroup.YesNo, ResultOptions.YesNoOptions },
         //{ ResultControlGroup.CoupleScores, ResultControl.CoupleScores.ToList() },
         //{ ResultControlGroup.Duration, ResultControl.Duration.ToList() },
-        { ResultControlGroup.MidNotMid, ResultOptions.MidNotMidOptions },
+        { EsResultControlGroup.MidNotMid, ResultOptions.MidNotMidOptions },
         // { ResultControlGroup.SingleScore, ResultOptions.SingleScoreOptions },
-        { ResultControlGroup.TopBottomNone, ResultOptions.TopBottomNoneOptions },
-        { ResultControlGroup.TopNotTop, ResultOptions.TopNotTopOptions },
-        { ResultControlGroup.BottomNotBottom, ResultOptions.BottomNotBottomOptions },
-        { ResultControlGroup.OverlordTyrant, ResultOptions.OverlordTyrantOptions },
-        { ResultControlGroup.TyrantNotTyrant, ResultOptions.TyrantNotTyrantOptions },
-        { ResultControlGroup.YesNoNone, ResultOptions.YesNoNoneOptions }
+        { EsResultControlGroup.TopBottomNone, ResultOptions.TopBottomNoneOptions },
+        { EsResultControlGroup.TopNotTop, ResultOptions.TopNotTopOptions },
+        { EsResultControlGroup.BottomNotBottom, ResultOptions.BottomNotBottomOptions },
+        { EsResultControlGroup.OverlordTyrant, ResultOptions.OverlordTyrantOptions },
+        { EsResultControlGroup.TyrantNotTyrant, ResultOptions.TyrantNotTyrantOptions },
+        { EsResultControlGroup.YesNoNone, ResultOptions.YesNoNoneOptions }
+    };
+}
+
+public static class VoleyballResultControlDictionary
+{
+    // Add this mapping dictionary to convert betType to ResultControlGroup
+    public static readonly Dictionary<string, int> BetTypeToControlGroup = new Dictionary<string, int>
+    {
+        // HomeAway
+        { "3901", VoleyballResultControlGroup.HomeAway },
+        
+        // YesNo
+        { "3914", VoleyballResultControlGroup.YesNo },
+
+        // HomeAwayNone
+        { "3909", VoleyballResultControlGroup.HomeAwayNone },
+
+        // CoupleScores
+        { "3903", EsResultControlGroup.CoupleScores },
+        { "3915", EsResultControlGroup.CoupleScores },
+    };
+
+    public static readonly Dictionary<int, List<Option>> ControlGroupToOptions = new Dictionary<int, List<Option>>
+    {
+        { EsResultControlGroup.HomeAwayNone, ResultOptions.HomeAwayNoneOptions},
+        { EsResultControlGroup.HomeAway, ResultOptions.HomeAwayOptions },
+        { EsResultControlGroup.HomeAwayDraw, ResultOptions.HomeAwayDrawOptions },
+        { EsResultControlGroup.YesNo, ResultOptions.YesNoOptions },
+        //{ ResultControlGroup.CoupleScores, ResultControl.CoupleScores.ToList() },
+        //{ ResultControlGroup.Duration, ResultControl.Duration.ToList() },
+        { EsResultControlGroup.MidNotMid, ResultOptions.MidNotMidOptions },
+        // { ResultControlGroup.SingleScore, ResultOptions.SingleScoreOptions },
+        { EsResultControlGroup.TopBottomNone, ResultOptions.TopBottomNoneOptions },
+        { EsResultControlGroup.TopNotTop, ResultOptions.TopNotTopOptions },
+        { EsResultControlGroup.BottomNotBottom, ResultOptions.BottomNotBottomOptions },
+        { EsResultControlGroup.OverlordTyrant, ResultOptions.OverlordTyrantOptions },
+        { EsResultControlGroup.TyrantNotTyrant, ResultOptions.TyrantNotTyrantOptions },
+        { EsResultControlGroup.YesNoNone, ResultOptions.YesNoNoneOptions }
+    };
+
+
+    public static readonly Dictionary<int, List<Option>> VoleyballControlGroupToOptions = new Dictionary<int, List<Option>>
+    {
+        { VoleyballResultControlGroup.HomeAway, ResultOptions.HomeAwayOptions},
+        { VoleyballResultControlGroup.HomeAwayNone, ResultOptions.HomeAwayNoneOptions},
+        { VoleyballResultControlGroup.YesNo, ResultOptions.YesNoOptions},
+        //{ VoleyballResultControlGroup.CoupleScores, ResultOptions.coy},
+
     };
 }
 
