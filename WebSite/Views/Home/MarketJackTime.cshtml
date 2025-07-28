@@ -90,13 +90,6 @@
                 return;
             }
 
-            // Validate input format
-            const marketPattern = /^\d+-\-?\d*\.?\d*(,\d+-\-?\d*\.?\d*)*$/;
-            if (!marketPattern.test(input)) {
-                showAlert("❌ Invalid format! Please use format: BetType-GoalLine (e.g., 1-1,7-0.5)", 'error');
-                return;
-            }
-
             showLoading(true);
 
             try {

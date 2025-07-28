@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebSite.Controllers
 {
     [EnableCors("AllowAll")]
-    [Route("api/cash-out")]
+    [Route("api/JackTimeCashOut")]
+    [AllowAnonymous]
     [ApiController]
     public class CashOutApiController : ControllerBase
     {
@@ -40,7 +42,7 @@ namespace WebSite.Controllers
             return Ok(request);
         }
 
-        [HttpGet("GetMarkets")]
+        [HttpGet("Markets")]
         public IActionResult GetMarkets(int matchIds)
         {
             RequestMonitorService.AddRequest("MatchId: " + matchIds, "GetMarkets");
