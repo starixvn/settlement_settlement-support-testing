@@ -9,6 +9,10 @@ public class Market
     public int BetType { get; set; }
 
     public decimal GoalLine { get; set; }
+
+    public int LiveHomeScore { get; set; }
+
+    public int LiveAwayScore { get; set; }
 }
 public static class RequestMonitorService
 {
@@ -27,18 +31,31 @@ public static class RequestMonitorService
             {
                 var betTypeStr = trimmedMarket.Substring(0, dashIndex).Trim();
                 var goalLineStr = trimmedMarket.Substring(dashIndex + 1).Trim();
-                
+
                 if (int.TryParse(betTypeStr, out int betType) && decimal.TryParse(goalLineStr, out decimal goalLine))
                 {
                     _markets.Add(new Market
                     {
                         BetType = betType,
-                        GoalLine = goalLine
+                        GoalLine = goalLine,
+                        LiveHomeScore = 0,
+                        LiveAwayScore = 0
                     });
                 }
             }
         }
     }
+
+    public static void UpdateLiveScore(int betType, decimal goalLine, int homeScore, int awayScore)
+    {
+        var market = _markets.FirstOrDefault(m => m.BetType == betType && m.GoalLine == goalLine);
+        if (market != null)
+        {
+            market.LiveHomeScore = homeScore;
+            market.LiveAwayScore = awayScore;
+        }
+    }
+
     public static void AddRequest(string requestData, string apiName)
     {
         _requests.Enqueue($"{(DateTime.Now.ToString("HH:mm:ss"))}: API {apiName} - {requestData}");

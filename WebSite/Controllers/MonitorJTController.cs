@@ -34,6 +34,18 @@ namespace WebSite.Controllers
             return Ok();
         }
 
+        [HttpPost("UpdateLiveScore")]
+        public IActionResult UpdateLiveScore([FromBody] Market market)
+        {
+            if (market == null)
+            {
+                return BadRequest("Invalid request data");
+            }
+
+            RequestMonitorService.UpdateLiveScore(market.BetType, market.GoalLine, market.LiveHomeScore, market.LiveAwayScore);
+            return Ok();
+        }
+
         [HttpPost("GetMarkets/{matchId}")]
         public IActionResult GetMarkets(int matchId)
         {

@@ -4,16 +4,16 @@
 
 <div class="container">
     <a href="@Url.Action("Index", "Home")" class="back-link">← Back to Home</a>
-    
+
     <h1>➕ Market Jack Time Monitor</h1>
-    
+
     <div class="market-input-section">
         <h3>Add New Market</h3>
         <div class="input-group">
             <div class="form-group">
                 <label for="requestInput">Market Configuration:</label>
-                <input type="text" id="requestInput" class="form-control" 
-                       placeholder="BetType1-GoalLine1,BetType2-GoalLine2" />
+                <input type="text" id="requestInput" class="form-control"
+                    placeholder="BetType1-GoalLine1,BetType2-GoalLine2" />
             </div>
             <button onclick="addRequest()" class="btn btn-success">
                 ➕ Add Market
@@ -26,26 +26,26 @@
             <strong>Example:</strong> 1-1,7-0.5,8-(-0.5)
         </div>
     </div>
-    
+
     <div class="form-section">
         <h2>Active Markets</h2>
         <ul id="requestList" class="market-list">
             <!-- Markets will be loaded here -->
         </ul>
     </div>
-    
+
     <div id="loading" class="loading">
         <div class="spinner"></div>
         <p>Loading markets...</p>
     </div>
-    
+
     <div id="alert-container"></div>
 </div>
 
 @section Scripts {
     <script>
         // Load markets on page load
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             loadRequest();
         });
 
@@ -56,18 +56,18 @@
             } else if (type === 'error') {
                 alert(message);
             }
-            
+
             // Also show custom alert
             const alertContainer = document.getElementById('alert-container');
-            const alertClass = type === 'success' ? 'alert-success' : 
-                              type === 'error' ? 'alert-danger' : 'alert-info';
-            
+            const alertClass = type === 'success' ? 'alert-success' :
+                type === 'error' ? 'alert-danger' : 'alert-info';
+
             alertContainer.innerHTML = `
-                <div class="alert ${alertClass}">
-                    ${message}
-                </div>
-            `;
-            
+                            <div class="alert ${alertClass}">
+                                ${message}
+                            </div>
+                        `;
+
             // Auto-hide after 5 seconds
             setTimeout(() => {
                 alertContainer.innerHTML = '';
@@ -121,7 +121,7 @@
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-                
+
                 let data = await response.json();
                 updateList(data);
             } catch (error) {
@@ -158,44 +158,98 @@
             }
         }
 
+        async function updateLiveScore(betType, goalLine, homeScore, awayScore) {
+            showLoading(true);
+
+            try {
+                let response = await fetch('/api/monitor/UpdateLiveScore', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        betType: betType,
+                        goalLine: goalLine,
+                        liveHomeScore: homeScore,
+                        liveAwayScore: awayScore
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                showAlert("✅ Live scores updated successfully!", 'success');
+                await loadRequest();
+            } catch (error) {
+                showAlert("❌ Error: Unable to update live scores", 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
         function updateList(markets) {
             var list = document.getElementById("requestList");
             list.innerHTML = ""; // Clear old list
 
             if (markets.length === 0) {
                 list.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">📊</div>
-                        <h3>No Active Markets</h3>
-                        <p>Add a market above to get started</p>
-                    </div>
-                `;
+                                <div class="empty-state">
+                                    <div class="icon">📊</div>
+                                    <h3>No Active Markets</h3>
+                                    <p>Add a market above to get started</p>
+                                </div>
+                            `;
                 return;
             }
 
             markets.forEach(market => {
                 let li = document.createElement("li");
                 li.className = "market-item";
-                
+
                 li.innerHTML = `
-                    <div class="market-info">
-                        <div class="market-bet-type">BetType: ${market.betType}</div>
-                        <div class="market-goal-line">GoalLine: ${market.goalLine}</div>
-                    </div>
-                    <div class="market-actions">
-                        <button onclick="clearMarket(${market.betType}, ${market.goalLine})" 
-                                class="btn btn-danger btn-sm">
-                            🗑️ Remove
-                        </button>
-                    </div>
-                `;
-                
+                                <div class="market-info">
+                                    <div class="market-bet-type">BetType: ${market.betType}</div>
+                                    <div class="market-goal-line">GoalLine: ${market.goalLine}</div>
+                                    <div class="market-scores">
+                                        <div class="score-section">
+                                            <label>Home Score:</label>
+                                            <input type="number" id="homeScore_${market.betType}_${market.goalLine}" 
+                                                   value="${market.liveHomeScore || 0}" min="0" class="score-input" />
+                                        </div>
+                                        <div class="score-section">
+                                            <label>Away Score:</label>
+                                            <input type="number" id="awayScore_${market.betType}_${market.goalLine}" 
+                                                   value="${market.liveAwayScore || 0}" min="0" class="score-input" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="market-actions">
+                                    <button onclick="updateLiveScoreFromInputs(${market.betType}, ${market.goalLine})" 
+                                            class="btn btn-primary btn-sm">
+                                        📊 Update Scores
+                                    </button>
+                                    <button onclick="clearMarket(${market.betType}, ${market.goalLine})" 
+                                            class="btn btn-danger btn-sm">
+                                        🗑️ Remove
+                                    </button>
+                                </div>
+                            `;
+
                 list.appendChild(li);
             });
         }
 
+        function updateLiveScoreFromInputs(betType, goalLine) {
+            const homeScoreInput = document.getElementById(`homeScore_${betType}_${goalLine}`);
+            const awayScoreInput = document.getElementById(`awayScore_${betType}_${goalLine}`);
+
+            const homeScore = parseInt(homeScoreInput.value) || 0;
+            const awayScore = parseInt(awayScoreInput.value) || 0;
+
+            updateLiveScore(betType, goalLine, homeScore, awayScore);
+        }
+
         // Add keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.ctrlKey && e.key === 'Enter') { // Ctrl + Enter
                 addRequest();
             }
@@ -208,4 +262,4 @@
         // Auto-refresh every 30 seconds
         setInterval(loadRequest, 30000);
     </script>
-} 
+}
