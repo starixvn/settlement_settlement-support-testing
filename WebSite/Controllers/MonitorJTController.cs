@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Cors;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebSite.Controllers
 {
@@ -26,7 +26,7 @@ namespace WebSite.Controllers
         public IActionResult ClearMarket([FromBody] Market market)
         {
             // Ensure the market object has valid data
-            if (market == null || market.BetType == 0)
+            if (market == null || market.MarketId == string.Empty)
             {
                 return BadRequest("Invalid market data");
             }
@@ -42,7 +42,7 @@ namespace WebSite.Controllers
                 return BadRequest("Invalid request data");
             }
 
-            RequestMonitorService.UpdateLiveScore(market.BetType, market.GoalLine, market.LiveHomeScore, market.LiveAwayScore);
+            RequestMonitorService.UpdateLiveScore(market.MarketId, market.LiveHomeScore, market.LiveAwayScore);
             return Ok();
         }
 

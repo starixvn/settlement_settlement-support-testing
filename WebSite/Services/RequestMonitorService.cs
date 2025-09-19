@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Concurrent;
 
 public class Market
 {
+    public string MarketId { get; set; } = Guid.NewGuid().ToString();
     public int MatchId { get; set; }
     public int BetType { get; set; }
 
@@ -46,9 +44,9 @@ public static class RequestMonitorService
         }
     }
 
-    public static void UpdateLiveScore(int betType, decimal goalLine, int homeScore, int awayScore)
+    public static void UpdateLiveScore(string marketId, int homeScore, int awayScore)
     {
-        var market = _markets.FirstOrDefault(m => m.BetType == betType && m.GoalLine == goalLine);
+        var market = _markets.Find(m => m.MarketId == marketId);
         if (market != null)
         {
             market.LiveHomeScore = homeScore;
@@ -78,6 +76,6 @@ public static class RequestMonitorService
 
     public static void ClearMarket(Market market)
     {
-        _markets.RemoveAll(m => m.BetType == market.BetType && m.GoalLine == market.GoalLine);
+        _markets.RemoveAll(m => m.MarketId == market.MarketId);
     }
 }
