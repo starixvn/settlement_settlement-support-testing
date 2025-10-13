@@ -4,5 +4,5 @@
 
     public string Message { get; set; }
 
-    public IEnumerable<Market> Data { get; set; }
+   // public string[] Data { get; set; }
 }

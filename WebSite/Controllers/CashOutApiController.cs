@@ -52,7 +52,7 @@ namespace WebSite.Controllers
             {
                 IsSuccess = true,
                 Message = string.Empty,
-                Data = requestData
+               // Data = requestData
             });
         }
 
