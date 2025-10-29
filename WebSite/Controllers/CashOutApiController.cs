@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Fanex.Logging;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using WebSite.Models;
+using WebSite.Models.CashOut;
+using WebSite.Services;
 
 namespace WebSite.Controllers
 {
@@ -67,49 +70,24 @@ namespace WebSite.Controllers
         [HttpPost("Query")]
         public IActionResult NotificationsQuery([FromBody] object request)
         {
-            string requestData = Newtonsoft.Json.JsonConvert.SerializeObject(request);
-
-            var query = new BetBuilderQuery
-            {
-                Service = new NotificationServiceIndex { Index = 0 },
-                QueryResult = new BetBuilderQueryResult
-                {
-                    ResultCode = "SUCCESS",
-                    Notifications = new BetBuilderParentNotifications
-                    {
-                        Offset = "10327",
-                        Notifications = new List<BetBuilderNotification>
-                        {
-                            new BetBuilderNotification
-                            {
-                                BetBuilderOdds = new BetBuilderOdds
-                                {
-                                    Bet = new Bet
-                                    {
-                                        BetId = new BetId { Id = "0987654321" }
-                                    },
-                                    MatchId = new MatchId { Id = "0123456789" },
-                                    Odds = 2.50
-                                }
-                            },
-                            new BetBuilderNotification
-                            {
-                                BetBuilderOdds = new BetBuilderOdds
-                                {
-                                    Bet = new Bet
-                                    {
-                                        BetId = new BetId { Id = "1234567890" }
-                                    },
-                                    MatchId = new MatchId { Id = "9876543210" },
-                                    Odds = 1.75
-                                }
-                            }
-                        }
-                    }
-                }
-            };
+            var betBuilderQueryService = new BetBuilderQueryService();
+            var query = betBuilderQueryService.CreateSampleQuery();
 
             return Ok(query);
+        }
+
+        [HttpPost("command")]
+        public IActionResult Command([FromBody] object request)
+        {
+            LogService.Error("Received command: " + Newtonsoft.Json.JsonConvert.SerializeObject(request));
+            var response = new VoidLegsResponse
+            {
+                Header = new VoidLegsHeader
+                {
+                    ReplyStatusCode = "SUCCESS"
+                }
+            };
+            return Ok(response);
         }
     }
 }
