@@ -79,7 +79,7 @@ namespace WebSite.Controllers
         [HttpPost("command")]
         public IActionResult Command([FromBody] object request)
         {
-            LogService.Error("Received command: " + Newtonsoft.Json.JsonConvert.SerializeObject(request));
+            LogService.InfoAsync("Received command: " + Newtonsoft.Json.JsonConvert.SerializeObject(request));
             var response = new VoidLegsResponse
             {
                 Header = new VoidLegsHeader

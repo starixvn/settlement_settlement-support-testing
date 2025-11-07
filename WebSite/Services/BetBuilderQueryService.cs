@@ -5,6 +5,7 @@ namespace WebSite.Services
     public class BetBuilderQueryService
     {
         private readonly Random _random = new Random();
+
         public BetBuilderQuery CreateSampleQuery()
         {
             return new BetBuilderQuery
@@ -27,7 +28,7 @@ namespace WebSite.Services
                                         BetId = new BetId { Id = "448310400052625408" }
                                     },
                                     MatchId = new MatchId { Id = "83820770" },
-                                    Odds = GetRandomOdds()
+                                    Odds = 3.4306
                                 }
                             },
                             new BetBuilderNotification
@@ -39,7 +40,7 @@ namespace WebSite.Services
                                         BetId = new BetId { Id = "448310400052625408" }
                                     },
                                     MatchId = new MatchId { Id = "83820771" },
-                                    Odds = GetRandomOdds()
+                                    Odds =  35.4299999999
                                 }
                             },
                             new BetBuilderNotification
